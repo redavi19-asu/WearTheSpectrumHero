@@ -44,10 +44,9 @@ function useScrollProgress(ref) {
     const onScroll = () => {
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight || 1;
-      // progress 0..1 as section crosses viewport
-      const start = vh * 0.85;
-      const end = -vh * 0.15;
-      const raw = (start - rect.top) / (start - end);
+      // progress 0..1 only while the section is pinned in view
+      const travel = Math.max(1, rect.height - vh);      // distance the section “scrolls” while sticky
+      const raw = Math.max(0, -rect.top) / travel;       // 0 when top hits viewport, 1 when bottom leaves
       const clamped = Math.max(0, Math.min(1, raw));
       setP(clamped);
     };
@@ -248,25 +247,106 @@ export default function App() {
         </div>
       </section>
 
-      {/* STORY C — LINE DRAWS */}
-      <section ref={lineSectionRef} className="section">
-        <div className="container">
-          <h2 className="h2 reveal">The spectrum line shows up — and the room slows down</h2>
-          <p className="p reveal">
-            You don’t need a speech. Just a signal that says: give me a second. Meet me with care.
-          </p>
+      {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
+      <section ref={lineSectionRef} className="pinSection" id="story-c">
+        <div
+          className="pinSticky"
+          style={{
+            // local progress: stays 0 until you're clearly inside the pinned section
+            "--t": Math.min(1, Math.max(0, (lineProgress - 0.12) / 0.88)),
 
-          <div className="lineWrap reveal" aria-hidden="true">
-            <svg className="spectrumLine" viewBox="0 0 1200 120" preserveAspectRatio="none">
-              <path
-                className="linePath"
-                d="M0,75 C140,20 260,120 400,70 C520,25 620,115 760,70 C900,25 980,95 1200,55"
-                style={{
-                  strokeDashoffset: `${(1 - lineProgress) * 1800}`,
-                  transition: reducedMotion ? "none" : "stroke-dashoffset 120ms linear",
-                }}
-              />
+            // draw ring first 0%→35%, brain 25%→100% (overlap feels smoother)
+            "--ring": Math.min(1, Math.max(0, ((lineProgress - 0.12) / 0.88) / 0.35)),
+            "--brain": Math.min(1, Math.max(0, (((lineProgress - 0.12) / 0.88) - 0.25) / 0.75)),
+
+            // crossfade ring → brain
+            "--ringFade": Math.min(1, Math.max(0, (0.58 - ((lineProgress - 0.12) / 0.88)) / 0.22)),
+            "--brainFade": Math.min(1, Math.max(0, (((lineProgress - 0.12) / 0.88) - 0.35) / 0.25)),
+          }}
+        >
+          <div className="pinCopy">
+            <h2 className="h2 reveal">Keep scrolling.</h2>
+            <p className="p reveal">
+              The section holds. The colors move. The lines form a brain — because support isn’t one color.
+            </p>
+          </div>
+
+          <div className="ringBrainStage reveal" aria-hidden="true">
+            {/* RING: 8 solid-color segments (no extra colors) */}
+            <svg className="rbSvg" viewBox="0 0 600 600">
+              <g className="ringLayer">
+                {/* each arc draws based on --ring */}
+                <path pathLength="1" className="rbPath red"
+                  d="M300,70 A230,230 0 0 1 473,143" />
+                <path pathLength="1" className="rbPath orange"
+                  d="M473,143 A230,230 0 0 1 530,300" />
+                <path pathLength="1" className="rbPath yellow"
+                  d="M530,300 A230,230 0 0 1 473,457" />
+                <path pathLength="1" className="rbPath green"
+                  d="M473,457 A230,230 0 0 1 300,530" />
+                <path pathLength="1" className="rbPath blue"
+                  d="M300,530 A230,230 0 0 1 127,457" />
+                <path pathLength="1" className="rbPath indigo"
+                  d="M127,457 A230,230 0 0 1 70,300" />
+                <path pathLength="1" className="rbPath violet"
+                  d="M70,300 A230,230 0 0 1 127,143" />
+                <path pathLength="1" className="rbPath black"
+                  d="M127,143 A230,230 0 0 1 300,70" />
+              </g>
+
+              {/* BRAIN: 8 segments (same palette). Draws based on --brain */}
+              <g className="brainLayer">
+                {/* Outer brain contour (more realistic) */}
+                <path pathLength="1" className="rbPath black"
+                  d="M300,150
+       C245,125 185,145 165,205
+       C145,265 175,295 170,330
+       C160,405 205,455 260,475
+       C285,485 292,505 300,520
+       C308,505 315,485 340,475
+       C405,450 450,400 435,330
+       C430,295 460,265 440,205
+       C420,145 355,125 300,150 Z" />
+
+                {/* Left hemisphere folds */}
+                <path pathLength="1" className="rbPath red"
+                  d="M262,175 C225,175 205,200 212,228 C218,252 245,260 240,285" />
+                <path pathLength="1" className="rbPath orange"
+                  d="M230,245 C205,255 195,275 205,295 C215,315 245,315 238,338" />
+                <path pathLength="1" className="rbPath yellow"
+                  d="M215,315 C190,330 188,355 205,372 C222,388 252,382 250,405" />
+                <path pathLength="1" className="rbPath green"
+                  d="M235,365 C220,392 235,415 260,420 C282,424 292,440 288,462" />
+
+                {/* Right hemisphere folds */}
+                <path pathLength="1" className="rbPath blue"
+                  d="M338,175 C375,175 395,200 388,228 C382,252 355,260 360,285" />
+                <path pathLength="1" className="rbPath indigo"
+                  d="M370,245 C395,255 405,275 395,295 C385,315 355,315 362,338" />
+                <path pathLength="1" className="rbPath violet"
+                  d="M385,315 C410,330 412,355 395,372 C378,388 348,382 350,405" />
+
+                {/* Deeper sulci / inner curves (adds “real” texture) */}
+                <path pathLength="1" className="rbPath red"
+                  d="M290,205 C265,220 265,245 290,258 C315,272 315,295 290,308" />
+                <path pathLength="1" className="rbPath blue"
+                  d="M310,205 C335,220 335,245 310,258 C285,272 285,295 310,308" />
+
+                <path pathLength="1" className="rbPath orange"
+                  d="M280,330 C255,345 255,372 280,385 C305,398 305,420 282,435" />
+                <path pathLength="1" className="rbPath indigo"
+                  d="M320,330 C345,345 345,372 320,385 C295,398 295,420 318,435" />
+
+                {/* Brain stem (simple but more believable) */}
+                <path pathLength="1" className="rbPath black"
+                  d="M300,520 C305,545 320,560 340,570" />
+              </g>
             </svg>
+          </div>
+
+          <div className="pinHint reveal">
+            <span className="chip dot blue">keep scrolling</span>
+            <span className="chip dot green">watch it form</span>
           </div>
         </div>
       </section>

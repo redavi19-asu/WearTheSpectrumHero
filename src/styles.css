@@ -654,3 +654,86 @@ body{
   color: rgba(255,255,255,.75);
   line-height:1.6;
 }
+
+/* ===== PINNED SECTION C (ring → brain) ===== */
+.pinSection{
+  height: 260vh;           /* gives longer “stop + keep scrolling” space */
+  background: #000;
+  padding: 0 18px;
+}
+
+.pinSticky{
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  padding: 84px 0;
+}
+
+.pinCopy{
+  width: min(900px, 100%);
+  text-align: center;
+}
+
+.ringBrainStage{
+  width: min(520px, 92vw);
+  aspect-ratio: 1 / 1;     /* “more square image” */
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+  box-shadow: 0 18px 60px rgba(0,0,0,.6);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.rbSvg{
+  width: 92%;
+  height: 92%;
+  display: block;
+}
+
+/* Shared stroke style */
+.rbPath{
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  /* draw control (pathLength="1" makes this easy) */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.55));
+  opacity: .95;
+}
+
+/* Ring and brain layers crossfade */
+.ringLayer{
+  opacity: var(--ringFade);
+  transition: opacity .2s linear;
+}
+.brainLayer{
+  opacity: var(--brainFade);
+  transition: opacity .2s linear;
+}
+
+/* Ring draws with --ring; brain draws with --brain */
+.ringLayer .rbPath{
+  stroke-dashoffset: calc(1 - var(--ring));
+}
+.brainLayer .rbPath{
+  stroke-dashoffset: calc(1 - var(--brain));
+}
+
+/* EXACT 8 colors only (no pink) */
+.rbPath.red{ stroke: var(--c-red); }
+.rbPath.orange{ stroke: var(--c-orange); }
+.rbPath.yellow{ stroke: var(--c-yellow); }
+.rbPath.green{ stroke: var(--c-green); }
+.rbPath.blue{ stroke: var(--c-blue); }
+.rbPath.indigo{ stroke: var(--c-indigo); }
+.rbPath.violet{ stroke: var(--c-violet); }
+.rbPath.black{ stroke: rgba(255,255,255,.75); }  /* “black line” on black page */
