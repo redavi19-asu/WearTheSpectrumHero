@@ -500,11 +500,14 @@ body{
 .linePath{
   stroke: var(--c-blue);
   filter:
-    drop-shadow(-240px 0 0 var(--c-red))
-    drop-shadow(-170px 0 0 var(--c-orange))
-    drop-shadow(-90px 0 0 var(--c-yellow))
-    drop-shadow(0px 0 0 var(--c-green))
-    drop-shadow(110px 0 0 var(--c-blue));
+    drop-shadow(-280px 0 0 var(--c-red))
+    drop-shadow(-210px 0 0 var(--c-orange))
+    drop-shadow(-140px 0 0 var(--c-yellow))
+    drop-shadow(-70px 0 0 var(--c-green))
+    drop-shadow(0px 0 0 var(--c-blue))
+    drop-shadow(70px 0 0 var(--c-indigo))
+    drop-shadow(140px 0 0 #ff6fcf) /* pink */
+    drop-shadow(210px 0 0 #2bd3c6); /* teal */
   opacity: .95;
 }
 
@@ -613,91 +616,6 @@ body{
 @media (prefers-reduced-motion: reduce){
   .reveal{ transition:none; opacity:1; transform:none; }
   .bounce .arrow{ animation:none; }
-}
-}
-@media (max-width: 900px){
-  .patchLayout{ grid-template-columns:1fr; }
-}
-
-.sweep{
-  position:absolute;
-  inset:-20%;
-  z-index:0;
-  background: linear-gradient(90deg,
-    rgba(238,32,77,.20),
-    rgba(255,117,56,.16),
-    rgba(252,232,131,.14),
-    rgba(28,172,120,.14),
-    rgba(31,117,254,.16),
-    rgba(115,102,189,.16)
-  );
-  filter: blur(60px);
-  opacity:.8;
-  transform: translateZ(0);
-}
-
-.patchText, .patchArt{ position:relative; z-index:1; }
-
-.quote{ color: rgba(255,255,255,.88); }
-
-.chipRow{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:16px;
-}
-.chip{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  border:1px solid var(--stroke);
-  background: rgba(0,0,0,.18);
-  padding:10px 12px;
-  border-radius:999px;
-  color: rgba(255,255,255,.82);
-  font-weight:700;
-  font-size:13px;
-}
-.chipDot{
-  width:8px;height:8px;border-radius:50%;
-  background: rgba(255,255,255,.75);
-  box-shadow: 0 0 0 2px rgba(255,255,255,.08);
-}
-.chip-red .chipDot{ background: var(--cr-red); }
-.chip-yellow .chipDot{ background: var(--cr-yellow); }
-.chip-green .chipDot{ background: var(--cr-green); }
-.chip-blue .chipDot{ background: var(--cr-blue); }
-
-.patchArt{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.patchArt img{
-  width:min(420px, 80vw);
-  height:auto;
-  image-rendering: auto;
-  filter: drop-shadow(0 16px 60px rgba(0,0,0,.55));
-}
-
-/* SECTION C */
-.c{
-  background:
-    radial-gradient(900px 520px at 50% 35%, rgba(31,117,254,.10), transparent 65%),
-    radial-gradient(900px 520px at 50% 75%, rgba(238,32,77,.08), transparent 65%);
-}
-.cInner{
-  width:min(1100px, 100%);
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-.lineStage{
-  margin-top: 10px;
-  border: 1px solid var(--stroke);
-  border-radius: 22px;
-  background: rgba(255,255,255,.03);
-  padding: 14px;
 }
 .lineSvg{ width:100%; height:auto; display:block; }
 
