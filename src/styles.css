@@ -700,6 +700,15 @@ body{
   display: block;
 }
 
+.rbVideo{
+  width: 92%;
+  height: 92%;
+  display:block;
+  border-radius: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,.7));
+}
+
 /* Shared stroke style */
 .rbPath{
   fill: none;

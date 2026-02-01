@@ -64,8 +64,24 @@ export default function App() {
   useRevealOnScroll(".reveal");
 
   const lineSectionRef = useRef(null);
+  const videoRef = useRef(null);
   const lineProgress = useScrollProgress(lineSectionRef);
   const [isPinned, setIsPinned] = useState(false);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    const sync = () => {
+      if (!v.duration || Number.isNaN(v.duration)) return;
+      const t = Math.max(0, Math.min(1, lineProgress));
+      v.currentTime = t * v.duration;
+    };
+
+    sync();
+    v.addEventListener("loadedmetadata", sync);
+    return () => v.removeEventListener("loadedmetadata", sync);
+  }, [lineProgress]);
 
   useEffect(() => {
     const el = lineSectionRef.current;
@@ -107,7 +123,31 @@ export default function App() {
   }, []);
 
   const scrollToId = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (reducedMotion) {
+      el.scrollIntoView({ behavior: "auto", block: "start" });
+      return;
+    }
+
+    const startY = window.scrollY || window.pageYOffset;
+    const targetY = el.getBoundingClientRect().top + startY;
+    const distance = targetY - startY;
+    const duration = 900;
+    const startTime = performance.now();
+
+    const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    const step = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const eased = easeInOut(progress);
+      window.scrollTo(0, startY + distance * eased);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
   };
 
   return (
@@ -174,6 +214,11 @@ export default function App() {
               />
             </div>
           </div>
+        </div>
+
+        <div className={`scrollHint ${reducedMotion ? "" : "bounce"}`}>
+          <span>Scroll</span>
+          <span className="arrow">↓</span>
         </div>
       </section>
 
@@ -266,6 +311,11 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        <div className={`scrollHint ${reducedMotion ? "" : "bounce"}`}>
+          <span>Scroll</span>
+          <span className="arrow">↓</span>
+        </div>
       </section>
 
       {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
@@ -278,103 +328,42 @@ export default function App() {
           }}
         >
           <div className="pinCopy">
-            <h2 className="h2 reveal">Keep scrolling.</h2>
+            <h2 className="h2 reveal">This is what “autism” can feel like.</h2>
+
             <p className="p reveal">
-              The section holds. The colors move. The lines form a brain — because support isn’t one color.
+              Not broken. Not less. Just different wiring — processing more, sensing more,
+              noticing patterns other people miss.
+            </p>
+
+            <p className="p reveal">
+              Autism isn’t a defect. It’s a different operating system.
+              Different sensory input. Different communication styles.
+              Different rhythm — with real strengths: focus, honesty,
+              creativity, deep interests.
+            </p>
+
+            <p className="p reveal">
+              Keep scrolling. The colors keep moving, because the brain never stops working.
+              And as it forms, the message is simple:
+              <span className="quote"> make space, be patient, lead with kindness.</span>
+            </p>
+
+            <p className="p subtle reveal">
+              Some days the world is too loud. Some days it’s too fast.
+              This is a reminder that understanding is a superpower —
+              and support changes everything.
             </p>
           </div>
 
-          <div className="ringBrainStage reveal" aria-hidden="true">
-            <svg className="rbSvg" viewBox="0 0 600 600">
-              <defs>
-                {/* Closed head/profile silhouette for clipping the brain inside */}
-                <clipPath id="profileClip">
-                  <path
-                    d="
-          M 380 145
-          C 430 175, 450 235, 425 275
-          C 418 290, 405 302, 392 308
-          C 386 312, 380 314, 375 315
-          C 386 337, 380 360, 362 375
-          C 344 390, 325 395, 312 402
-          C 320 430, 305 455, 278 470
-          C 260 480, 248 495, 252 518
-          C 250 545, 220 560, 195 545
-          C 165 525, 158 492, 168 468
-          C 178 444, 170 420, 150 395
-          C 128 368, 130 330, 155 305
-          C 175 285, 183 260, 180 235
-          C 175 190, 210 150, 260 135
-          C 310 120, 350 125, 380 145
-          Z
-        "
-                  />
-                </clipPath>
-              </defs>
-
-              {/* 1) WHITE PROFILE OUTLINE (real silhouette) */}
-              <g className="profileLayer">
-                <path
-                  pathLength="1"
-                  className="rbPath outline"
-                  d="
-        M 380 145
-        C 430 175, 450 235, 425 275
-              C 418 290, 405 302, 392 308
-              C 386 312, 380 314, 375 315
-        C 386 337, 380 360, 362 375
-        C 344 390, 325 395, 312 402
-        C 320 430, 305 455, 278 470
-        C 260 480, 248 495, 252 518
-        C 250 545, 220 560, 195 545
-        C 165 525, 158 492, 168 468
-        C 178 444, 170 420, 150 395
-        C 128 368, 130 330, 155 305
-        C 175 285, 183 260, 180 235
-        C 175 190, 210 150, 260 135
-        C 310 120, 350 125, 380 145
-      "
-                />
-              </g>
-
-              {/* 2) BRAIN INSIDE HEAD (8 colors, clipped to silhouette) */}
-              <g className="brainInsideLayer" clipPath="url(#profileClip)" transform="translate(22 -12) scale(1.12)">
-                {/* Outer brain boundary (subtle) */}
-                <path pathLength="1" className="rbPath black"
-                  d="M220,220
-         C235,180 270,160 310,165
-         C355,170 388,205 392,245
-         C395,280 372,305 340,312
-         C350,340 340,368 318,380
-         C292,395 260,392 242,372
-         C220,350 216,320 230,300
-         C210,285 205,255 220,220 Z" />
-
-                {/* Left hemisphere folds */}
-                <path pathLength="1" className="rbPath red"
-                  d="M245,210 C225,225 225,248 246,262 C266,276 292,276 304,292" />
-                <path pathLength="1" className="rbPath orange"
-                  d="M255,245 C238,260 240,282 260,295 C280,308 308,310 320,328" />
-                <path pathLength="1" className="rbPath yellow"
-                  d="M252,285 C236,300 240,322 260,334 C280,346 305,346 315,364" />
-                <path pathLength="1" className="rbPath green"
-                  d="M265,330 C252,350 265,370 290,372 C312,374 325,386 325,402" />
-
-                {/* Right hemisphere folds */}
-                <path pathLength="1" className="rbPath blue"
-                  d="M320,205 C345,220 355,242 345,260 C335,280 312,288 312,306" />
-                <path pathLength="1" className="rbPath indigo"
-                  d="M340,235 C362,252 370,275 355,292 C340,308 315,312 312,332" />
-                <path pathLength="1" className="rbPath violet"
-                  d="M350,275 C368,292 372,318 352,330 C332,342 305,345 298,362" />
-
-                {/* Midline sulcus (makes it read “brain” immediately) */}
-                <path pathLength="1" className="rbPath black"
-                  d="M305,182 C292,200 292,225 305,242
-         C318,260 318,285 305,302
-         C292,320 292,345 305,362" />
-              </g>
-            </svg>
+          <div className="ringBrainStage reveal">
+            <video
+              ref={videoRef}
+              className="rbVideo"
+              src={`${import.meta.env.BASE_URL}assets/brain-scroll.mp4`}
+              muted
+              playsInline
+              preload="auto"
+            />
           </div>
 
           <div className="pinHint reveal">
@@ -423,6 +412,11 @@ export default function App() {
               See merch
             </button>
           </div>
+        </div>
+
+        <div className={`scrollHint ${reducedMotion ? "" : "bounce"}`}>
+          <span>Scroll</span>
+          <span className="arrow">↓</span>
         </div>
       </section>
 
