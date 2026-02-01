@@ -104,7 +104,7 @@ export default function App() {
 
   useEffect(() => {
     const v = videoRef.current;
-    if (!v || isNarrow) return;
+    if (!v) return;
 
     const sync = () => {
       if (!v.duration || Number.isNaN(v.duration)) return;
@@ -115,26 +115,7 @@ export default function App() {
     sync();
     v.addEventListener("loadedmetadata", sync);
     return () => v.removeEventListener("loadedmetadata", sync);
-  }, [lineProgress, isNarrow]);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v || !isNarrow) return;
-
-    const tryPlay = () => {
-      const p = v.play();
-      if (p && p.catch) p.catch(() => {});
-    };
-
-    tryPlay();
-
-    const onVisibility = () => {
-      if (document.visibilityState === "visible") tryPlay();
-    };
-
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => document.removeEventListener("visibilitychange", onVisibility);
-  }, [isNarrow]);
+  }, [lineProgress]);
 
   useEffect(() => {
     const el = lineSectionRef.current;
@@ -416,8 +397,6 @@ export default function App() {
               muted
               playsInline
               preload="auto"
-              autoPlay={isNarrow}
-              loop={isNarrow}
               poster={`${BASE}assets/spectrumhero.png`}
             />
           </div>
