@@ -15,6 +15,21 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
+function useIsNarrow(bp = 768) {
+  const [narrow, setNarrow] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= bp : false
+  );
+
+  useEffect(() => {
+    const onResize = () => setNarrow(window.innerWidth <= bp);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [bp]);
+
+  return narrow;
+}
+
 function useRevealOnScroll(selector = ".reveal") {
   useEffect(() => {
     const els = Array.from(document.querySelectorAll(selector));
@@ -63,6 +78,7 @@ export default function App() {
   const BASE = import.meta.env.BASE_URL;
   const reducedMotion = usePrefersReducedMotion();
   useRevealOnScroll(".reveal");
+  const isNarrow = useIsNarrow();
 
   useEffect(() => {
     const history = window.history;
@@ -88,7 +104,7 @@ export default function App() {
 
   useEffect(() => {
     const v = videoRef.current;
-    if (!v) return;
+    if (!v || isNarrow) return;
 
     const sync = () => {
       if (!v.duration || Number.isNaN(v.duration)) return;
@@ -99,7 +115,26 @@ export default function App() {
     sync();
     v.addEventListener("loadedmetadata", sync);
     return () => v.removeEventListener("loadedmetadata", sync);
-  }, [lineProgress]);
+  }, [lineProgress, isNarrow]);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !isNarrow) return;
+
+    const tryPlay = () => {
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    };
+
+    tryPlay();
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") tryPlay();
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [isNarrow]);
 
   useEffect(() => {
     const el = lineSectionRef.current;
@@ -339,7 +374,7 @@ export default function App() {
       {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
       <section ref={lineSectionRef} className="pinSection" id="story-c">
         <div
-          className={`pinSticky ${isPinned ? "isPinned" : ""}`}
+          className={`pinSticky ${!isNarrow && isPinned ? "isPinned" : ""}`}
           style={{
             "--profile": Math.min(1, Math.max(0, (lineProgress - 0.08) / 0.40)),
             "--brain": Math.min(1, Math.max(0, (lineProgress - 0.35) / 0.65)),
@@ -381,6 +416,9 @@ export default function App() {
               muted
               playsInline
               preload="auto"
+              autoPlay={isNarrow}
+              loop={isNarrow}
+              poster={`${BASE}assets/spectrumhero.png`}
             />
           </div>
 
