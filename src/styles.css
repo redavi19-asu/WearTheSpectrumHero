@@ -29,7 +29,7 @@ body{
 
 .page{
   position:relative;
-  overflow-x:hidden;
+  overflow: visible;
 }
 
 /* faint drifting “spectrum noise” */
@@ -210,6 +210,7 @@ body{
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   background: var(--bg);
   color: var(--fg);
+  overflow-x: hidden;
 }
 
 .page{
@@ -505,9 +506,7 @@ body{
     drop-shadow(-140px 0 0 var(--c-yellow))
     drop-shadow(-70px 0 0 var(--c-green))
     drop-shadow(0px 0 0 var(--c-blue))
-    drop-shadow(70px 0 0 var(--c-indigo))
-    drop-shadow(140px 0 0 #ff6fcf) /* pink */
-    drop-shadow(210px 0 0 #2bd3c6); /* teal */
+    drop-shadow(70px 0 0 var(--c-indigo));
   opacity: .95;
 }
 
@@ -657,20 +656,26 @@ body{
 
 /* ===== PINNED SECTION C (ring → brain) ===== */
 .pinSection{
+  display: block;          /* avoid flex quirks that can break sticky */
   height: 260vh;           /* gives longer “stop + keep scrolling” space */
   background: #000;
   padding: 0 18px;
+  position: relative;
+  overflow: visible;
 }
 
 .pinSticky{
   position: sticky;
   top: 0;
+  height: 100vh;
   min-height: 100vh;
+  width: 100%;
   display: grid;
   place-items: center;
   gap: 18px;
-  padding: 84px 0;
+  padding: 84px 18px;
 }
+
 
 .pinCopy{
   width: min(900px, 100%);
@@ -710,22 +715,20 @@ body{
   opacity: .95;
 }
 
-/* Ring and brain layers crossfade */
-.ringLayer{
-  opacity: var(--ringFade);
-  transition: opacity .2s linear;
-}
-.brainLayer{
-  opacity: var(--brainFade);
-  transition: opacity .2s linear;
+/* Profile draws with --profile */
+.profileLayer .rbPath{
+  stroke-dashoffset: calc(1 - var(--profile));
 }
 
-/* Ring draws with --ring; brain draws with --brain */
-.ringLayer .rbPath{
-  stroke-dashoffset: calc(1 - var(--ring));
-}
-.brainLayer .rbPath{
+/* Brain draws with --brain */
+.brainInsideLayer .rbPath{
   stroke-dashoffset: calc(1 - var(--brain));
+}
+
+/* White outline stroke (instead of using .black for outline) */
+.rbPath.outline{
+  stroke: rgba(255,255,255,.92);
+  stroke-width: 10;
 }
 
 /* EXACT 8 colors only (no pink) */

@@ -65,6 +65,27 @@ export default function App() {
 
   const lineSectionRef = useRef(null);
   const lineProgress = useScrollProgress(lineSectionRef);
+  const [isPinned, setIsPinned] = useState(false);
+
+  useEffect(() => {
+    const el = lineSectionRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const inside = rect.top <= 0 && rect.bottom >= vh;
+      setIsPinned(inside);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   const spectrumWord = useMemo(() => {
     const letters = "Spectrum".split("");
@@ -250,18 +271,10 @@ export default function App() {
       {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
       <section ref={lineSectionRef} className="pinSection" id="story-c">
         <div
-          className="pinSticky"
+          className={`pinSticky ${isPinned ? "isPinned" : ""}`}
           style={{
-            // local progress: stays 0 until you're clearly inside the pinned section
-            "--t": Math.min(1, Math.max(0, (lineProgress - 0.12) / 0.88)),
-
-            // draw ring first 0%→35%, brain 25%→100% (overlap feels smoother)
-            "--ring": Math.min(1, Math.max(0, ((lineProgress - 0.12) / 0.88) / 0.35)),
-            "--brain": Math.min(1, Math.max(0, (((lineProgress - 0.12) / 0.88) - 0.25) / 0.75)),
-
-            // crossfade ring → brain
-            "--ringFade": Math.min(1, Math.max(0, (0.58 - ((lineProgress - 0.12) / 0.88)) / 0.22)),
-            "--brainFade": Math.min(1, Math.max(0, (((lineProgress - 0.12) / 0.88) - 0.35) / 0.25)),
+            "--profile": Math.min(1, Math.max(0, (lineProgress - 0.08) / 0.40)),
+            "--brain": Math.min(1, Math.max(0, (lineProgress - 0.35) / 0.65)),
           }}
         >
           <div className="pinCopy">
@@ -272,74 +285,92 @@ export default function App() {
           </div>
 
           <div className="ringBrainStage reveal" aria-hidden="true">
-            {/* RING: 8 solid-color segments (no extra colors) */}
             <svg className="rbSvg" viewBox="0 0 600 600">
-              <g className="ringLayer">
-                {/* each arc draws based on --ring */}
-                <path pathLength="1" className="rbPath red"
-                  d="M300,70 A230,230 0 0 1 473,143" />
-                <path pathLength="1" className="rbPath orange"
-                  d="M473,143 A230,230 0 0 1 530,300" />
-                <path pathLength="1" className="rbPath yellow"
-                  d="M530,300 A230,230 0 0 1 473,457" />
-                <path pathLength="1" className="rbPath green"
-                  d="M473,457 A230,230 0 0 1 300,530" />
-                <path pathLength="1" className="rbPath blue"
-                  d="M300,530 A230,230 0 0 1 127,457" />
-                <path pathLength="1" className="rbPath indigo"
-                  d="M127,457 A230,230 0 0 1 70,300" />
-                <path pathLength="1" className="rbPath violet"
-                  d="M70,300 A230,230 0 0 1 127,143" />
-                <path pathLength="1" className="rbPath black"
-                  d="M127,143 A230,230 0 0 1 300,70" />
+              <defs>
+                {/* Closed head/profile silhouette for clipping the brain inside */}
+                <clipPath id="profileClip">
+                  <path
+                    d="
+          M 380 145
+          C 430 175, 450 235, 425 275
+          C 412 296, 392 307, 375 315
+          C 386 337, 380 360, 362 375
+          C 344 390, 325 395, 312 402
+          C 320 430, 305 455, 278 470
+          C 260 480, 248 495, 252 518
+          C 250 545, 220 560, 195 545
+          C 165 525, 158 492, 168 468
+          C 178 444, 170 420, 150 395
+          C 128 368, 130 330, 155 305
+          C 175 285, 183 260, 180 235
+          C 175 190, 210 150, 260 135
+          C 310 120, 350 125, 380 145
+          Z
+        "
+                  />
+                </clipPath>
+              </defs>
+
+              {/* 1) WHITE PROFILE OUTLINE (real silhouette) */}
+              <g className="profileLayer">
+                <path
+                  pathLength="1"
+                  className="rbPath outline"
+                  d="
+        M 380 145
+        C 430 175, 450 235, 425 275
+        C 412 296, 392 307, 375 315
+        C 386 337, 380 360, 362 375
+        C 344 390, 325 395, 312 402
+        C 320 430, 305 455, 278 470
+        C 260 480, 248 495, 252 518
+        C 250 545, 220 560, 195 545
+        C 165 525, 158 492, 168 468
+        C 178 444, 170 420, 150 395
+        C 128 368, 130 330, 155 305
+        C 175 285, 183 260, 180 235
+        C 175 190, 210 150, 260 135
+        C 310 120, 350 125, 380 145
+      "
+                />
               </g>
 
-              {/* BRAIN: 8 segments (same palette). Draws based on --brain */}
-              <g className="brainLayer">
-                {/* Outer brain contour (more realistic) */}
+              {/* 2) BRAIN INSIDE HEAD (8 colors, clipped to silhouette) */}
+              <g className="brainInsideLayer" clipPath="url(#profileClip)">
+                {/* Outer brain boundary (subtle) */}
                 <path pathLength="1" className="rbPath black"
-                  d="M300,150
-       C245,125 185,145 165,205
-       C145,265 175,295 170,330
-       C160,405 205,455 260,475
-       C285,485 292,505 300,520
-       C308,505 315,485 340,475
-       C405,450 450,400 435,330
-       C430,295 460,265 440,205
-       C420,145 355,125 300,150 Z" />
+                  d="M220,220
+         C235,180 270,160 310,165
+         C355,170 388,205 392,245
+         C395,280 372,305 340,312
+         C350,340 340,368 318,380
+         C292,395 260,392 242,372
+         C220,350 216,320 230,300
+         C210,285 205,255 220,220 Z" />
 
                 {/* Left hemisphere folds */}
                 <path pathLength="1" className="rbPath red"
-                  d="M262,175 C225,175 205,200 212,228 C218,252 245,260 240,285" />
+                  d="M245,210 C225,225 225,248 246,262 C266,276 292,276 304,292" />
                 <path pathLength="1" className="rbPath orange"
-                  d="M230,245 C205,255 195,275 205,295 C215,315 245,315 238,338" />
+                  d="M255,245 C238,260 240,282 260,295 C280,308 308,310 320,328" />
                 <path pathLength="1" className="rbPath yellow"
-                  d="M215,315 C190,330 188,355 205,372 C222,388 252,382 250,405" />
+                  d="M252,285 C236,300 240,322 260,334 C280,346 305,346 315,364" />
                 <path pathLength="1" className="rbPath green"
-                  d="M235,365 C220,392 235,415 260,420 C282,424 292,440 288,462" />
+                  d="M265,330 C252,350 265,370 290,372 C312,374 325,386 325,402" />
 
                 {/* Right hemisphere folds */}
                 <path pathLength="1" className="rbPath blue"
-                  d="M338,175 C375,175 395,200 388,228 C382,252 355,260 360,285" />
+                  d="M320,205 C345,220 355,242 345,260 C335,280 312,288 312,306" />
                 <path pathLength="1" className="rbPath indigo"
-                  d="M370,245 C395,255 405,275 395,295 C385,315 355,315 362,338" />
+                  d="M340,235 C362,252 370,275 355,292 C340,308 315,312 312,332" />
                 <path pathLength="1" className="rbPath violet"
-                  d="M385,315 C410,330 412,355 395,372 C378,388 348,382 350,405" />
+                  d="M350,275 C368,292 372,318 352,330 C332,342 305,345 298,362" />
 
-                {/* Deeper sulci / inner curves (adds “real” texture) */}
-                <path pathLength="1" className="rbPath red"
-                  d="M290,205 C265,220 265,245 290,258 C315,272 315,295 290,308" />
-                <path pathLength="1" className="rbPath blue"
-                  d="M310,205 C335,220 335,245 310,258 C285,272 285,295 310,308" />
-
-                <path pathLength="1" className="rbPath orange"
-                  d="M280,330 C255,345 255,372 280,385 C305,398 305,420 282,435" />
-                <path pathLength="1" className="rbPath indigo"
-                  d="M320,330 C345,345 345,372 320,385 C295,398 295,420 318,435" />
-
-                {/* Brain stem (simple but more believable) */}
+                {/* Midline sulcus (makes it read “brain” immediately) */}
                 <path pathLength="1" className="rbPath black"
-                  d="M300,520 C305,545 320,560 340,570" />
+                  d="M305,182 C292,200 292,225 305,242
+         C318,260 318,285 305,302
+         C292,320 292,345 305,362" />
               </g>
             </svg>
           </div>
