@@ -64,6 +64,23 @@ export default function App() {
   const reducedMotion = usePrefersReducedMotion();
   useRevealOnScroll(".reveal");
 
+  useEffect(() => {
+    const history = window.history;
+    const prevRestoration = history.scrollRestoration;
+
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    window.scrollTo({ top: 0, behavior: "auto" });
+
+    return () => {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = prevRestoration;
+      }
+    };
+  }, []);
+
   const lineSectionRef = useRef(null);
   const videoRef = useRef(null);
   const lineProgress = useScrollProgress(lineSectionRef);
