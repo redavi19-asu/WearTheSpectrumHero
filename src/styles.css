@@ -749,3 +749,28 @@ body{
 .rbPath.indigo{ stroke: var(--c-indigo); }
 .rbPath.violet{ stroke: var(--c-violet); }
 .rbPath.black{ stroke: rgba(255,255,255,.75); }  /* “black line” on black page */
+
+@media (max-width: 768px){
+  .pinSection{
+    height: auto;              /* let it flow naturally on small screens */
+    padding: 64px 18px;
+  }
+
+  .pinSticky{
+    position: relative;        /* avoid iOS sticky quirks */
+    top: auto;
+    height: auto;
+    min-height: auto;
+    padding: 0;
+    gap: 18px;
+  }
+
+  .pinCopy{
+    text-align: center;
+  }
+
+  .ringBrainStage{
+    width: 100%;
+    max-width: 440px;
+  }
+}
