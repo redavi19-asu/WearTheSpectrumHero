@@ -293,7 +293,8 @@ export default function App() {
                     d="
           M 380 145
           C 430 175, 450 235, 425 275
-          C 412 296, 392 307, 375 315
+          C 418 290, 405 302, 392 308
+          C 386 312, 380 314, 375 315
           C 386 337, 380 360, 362 375
           C 344 390, 325 395, 312 402
           C 320 430, 305 455, 278 470
@@ -319,7 +320,8 @@ export default function App() {
                   d="
         M 380 145
         C 430 175, 450 235, 425 275
-        C 412 296, 392 307, 375 315
+              C 418 290, 405 302, 392 308
+              C 386 312, 380 314, 375 315
         C 386 337, 380 360, 362 375
         C 344 390, 325 395, 312 402
         C 320 430, 305 455, 278 470
@@ -336,7 +338,7 @@ export default function App() {
               </g>
 
               {/* 2) BRAIN INSIDE HEAD (8 colors, clipped to silhouette) */}
-              <g className="brainInsideLayer" clipPath="url(#profileClip)">
+              <g className="brainInsideLayer" clipPath="url(#profileClip)" transform="translate(22 -12) scale(1.12)">
                 {/* Outer brain boundary (subtle) */}
                 <path pathLength="1" className="rbPath black"
                   d="M220,220
