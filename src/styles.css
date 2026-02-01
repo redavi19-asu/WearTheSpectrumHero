@@ -752,15 +752,15 @@ body{
 
 @media (max-width: 768px){
   .pinSection{
-    height: auto;              /* let it flow naturally on small screens */
-    padding: 64px 18px;
+    height: 200vh;             /* enough travel to let sticky “lock” */
+    padding: 48px 18px;
   }
 
   .pinSticky{
-    position: relative;        /* avoid iOS sticky quirks */
-    top: auto;
-    height: auto;
-    min-height: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-height: 100vh;
     padding: 0;
     gap: 18px;
   }

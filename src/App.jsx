@@ -374,7 +374,7 @@ export default function App() {
       {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
       <section ref={lineSectionRef} className="pinSection" id="story-c">
         <div
-          className={`pinSticky ${!isNarrow && isPinned ? "isPinned" : ""}`}
+          className={`pinSticky ${isPinned ? "isPinned" : ""}`}
           style={{
             "--profile": Math.min(1, Math.max(0, (lineProgress - 0.08) / 0.40)),
             "--brain": Math.min(1, Math.max(0, (lineProgress - 0.35) / 0.65)),
