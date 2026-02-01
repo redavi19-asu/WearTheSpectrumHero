@@ -60,6 +60,7 @@ function useScrollProgress(ref) {
 }
 
 export default function App() {
+  const BASE = import.meta.env.BASE_URL;
   const reducedMotion = usePrefersReducedMotion();
   useRevealOnScroll(".reveal");
 
@@ -209,7 +210,7 @@ export default function App() {
               <div className="patchGlow" aria-hidden="true" />
               <img
                 className="patchImg"
-                src="/assets/spectrumhero.png"
+                src={`${BASE}assets/spectrumhero.png`}
                 alt="Spectrum Hero patch"
               />
             </div>
@@ -359,7 +360,7 @@ export default function App() {
             <video
               ref={videoRef}
               className="rbVideo"
-              src={`${import.meta.env.BASE_URL}assets/brain-scroll.mp4`}
+              src={`${BASE}assets/brain-scroll.mp4`}
               muted
               playsInline
               preload="auto"
@@ -381,7 +382,7 @@ export default function App() {
               <div className="patchGlow" aria-hidden="true" />
               <img
                 className="patchImg big"
-                src="/assets/spectrumhero.png"
+                src={`${BASE}assets/spectrumhero.png`}
                 alt="Spectrum Hero patch"
               />
             </div>
