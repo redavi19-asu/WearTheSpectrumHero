@@ -137,6 +137,13 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isPinned) return;
+    const section = lineSectionRef.current;
+    if (!section) return;
+    section.querySelectorAll(".reveal").forEach((n) => n.classList.add("in"));
+  }, [isPinned]);
+
   const spectrumWord = useMemo(() => {
     const letters = "Spectrum".split("");
     const colors = [
