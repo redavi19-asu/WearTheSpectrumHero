@@ -1,5 +1,65 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import "./styles.css";
+import { API_BASE } from "./api.js";
+import { startCart } from "./cart.js";
+
+async function buyNow() {
+  // 1. Start cart (token)
+  const cartRes = await fetch(`${API_BASE}/cart/start`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" }
+  });
+  const cartData = await cartRes.json();
+  if (!cartData.ok) throw new Error("Cart start failed");
+
+  localStorage.setItem("cartToken", cartData.cartToken);
+
+  // 2. Create PayPal order
+  const orderRes = await fetch(`${API_BASE}/paypal/order`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${cartData.cartToken}`
+    },
+    body: JSON.stringify({
+      items: [
+        { unitPrice: "25.00", qty: 1 }
+      ],
+      totals: { total: "25.00" }
+    })
+  });
+
+  const orderData = await orderRes.json();
+  if (!orderData.ok || !orderData.approveUrl) {
+    console.error(orderData);
+    throw new Error("PayPal order failed");
+  }
+
+  // 3. Redirect to PayPal
+  window.location.href = orderData.approveUrl;
+}
+
+function Capture() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("token");
+
+    fetch(`${API_BASE}/paypal/capture`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("cartToken")}`,
+      },
+      body: JSON.stringify({ orderId }),
+    })
+      .then((res) => res.json())
+      .then(console.log)
+      .catch(console.error);
+  }, []);
+
+  return <h1>Processing payment…</h1>;
+}
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -74,7 +134,7 @@ function useScrollProgress(ref) {
   return p;
 }
 
-export default function App() {
+function Home() {
   const BASE = import.meta.env.BASE_URL;
   const reducedMotion = usePrefersReducedMotion();
   useRevealOnScroll(".reveal");
@@ -95,6 +155,12 @@ export default function App() {
         history.scrollRestoration = prevRestoration;
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const existing = localStorage.getItem("cartToken");
+    if (existing) return;
+    startCart().catch((err) => console.warn("startCart failed", err));
   }, []);
 
   const lineSectionRef = useRef(null);
@@ -488,7 +554,7 @@ export default function App() {
               </div>
               <div className="productActions">
                 <button className="btn">Details</button>
-                <button className="btn primary">Buy</button>
+                <button className="btn primary" onClick={buyNow}>Buy</button>
               </div>
             </article>
 
@@ -507,7 +573,7 @@ export default function App() {
               </div>
               <div className="productActions">
                 <button className="btn">Details</button>
-                <button className="btn primary">Buy</button>
+                <button className="btn primary" onClick={buyNow}>Buy</button>
               </div>
             </article>
 
@@ -526,7 +592,7 @@ export default function App() {
               </div>
               <div className="productActions">
                 <button className="btn">Details</button>
-                <button className="btn primary">Buy</button>
+                <button className="btn primary" onClick={buyNow}>Buy</button>
               </div>
             </article>
           </div>
@@ -543,5 +609,14 @@ export default function App() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/capture" element={<Capture />} />
+      <Route path="*" element={<Home />} />
+    </Routes>
   );
 }

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment Processing...</title>
+</head>
+<body>
+  <h2>Finalizing your order...</h2>
+
+  <script>
+    const API_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
+
+    async function capture() {
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get("token");
+
+      if (!orderId) {
+        document.body.innerHTML = "<h3>Missing order ID</h3>";
+        return;
+      }
+
+      const cartToken = localStorage.getItem("cartToken");
+
+      const res = await fetch(`${API_BASE}/paypal/capture`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${cartToken}`
+        },
+        body: JSON.stringify({ orderId })
+      });
+
+      const data = await res.json();
+
+      if (data.ok) {
+        document.body.innerHTML = "<h2>Payment complete! Order placed.</h2>";
+      } else {
+        document.body.innerHTML = "<h2>Capture failed</h2><pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      }
+    }
+
+    capture();
+  </script>
+</body>
+</html>
