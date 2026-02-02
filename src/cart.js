@@ -10,7 +10,20 @@ async function getOrCreateCartToken() {
   // 🔥 FORCE fresh token to kill all stale HMACs
   localStorage.removeItem(CART_TOKEN_KEY);
 
-  const res = await fetch(`${API_BASE}/cart/start`, { method: "POST" });
+  const now = Date.now();
+  const tokenPayload = {
+    iat: now,
+    exp: now + 6 * 60 * 60 * 1000,
+    v: 1,
+  };
+
+  const res = await fetch(`${API_BASE}/cart/start`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(tokenPayload),
+  });
   const data = await res.json();
 
   if (!data.ok || !data.cartToken) {
