@@ -774,3 +774,52 @@ body{
     max-width: 440px;
   }
 }
+
+/* Cart drawer overlay */
+.cartBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 40;
+}
+
+.cartDrawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 340px;
+  height: 100vh;
+  background: #0b0b0b;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.cartDrawer.open {
+  transform: translateX(0);
+}
+
+.cartHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.cartItems {
+  flex: 1;
+  padding: 16px;
+}
+
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.checkoutBtn {
+  margin: 16px;
+}

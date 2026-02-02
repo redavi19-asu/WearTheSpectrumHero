@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./styles.css";
 import { API_BASE } from "./api.js";
 import { startCart } from "./cart.js";
+import { useCart } from "./cartState";
+import CartDrawer from "./CartDrawer.jsx";
 
 async function buyNow() {
   // 1. Start cart (token)
@@ -120,6 +122,7 @@ export default function Home() {
   const reducedMotion = usePrefersReducedMotion();
   useRevealOnScroll(".reveal");
   const isNarrow = useIsNarrow();
+  const { addItem } = useCart();
 
   useEffect(() => {
     const history = window.history;
@@ -535,7 +538,18 @@ export default function Home() {
               </div>
               <div className="productActions">
                 <button className="btn">Details</button>
-                <button className="btn primary" onClick={buyNow}>Buy</button>
+                <button
+                  className="btn primary"
+                  onClick={() =>
+                    addItem({
+                      id: "patch-tee",
+                      name: "Patch Tee",
+                      unitPrice: "25.00",
+                    })
+                  }
+                >
+                  Add to cart
+                </button>
               </div>
             </article>
 
@@ -554,7 +568,18 @@ export default function Home() {
               </div>
               <div className="productActions">
                 <button className="btn">Details</button>
-                <button className="btn primary" onClick={buyNow}>Buy</button>
+                <button
+                  className="btn primary"
+                  onClick={() =>
+                    addItem({
+                      id: "hoodie",
+                      name: "Hoodie",
+                      unitPrice: "25.00",
+                    })
+                  }
+                >
+                  Add to cart
+                </button>
               </div>
             </article>
 
@@ -573,12 +598,25 @@ export default function Home() {
               </div>
               <div className="productActions">
                 <button className="btn">Details</button>
-                <button className="btn primary" onClick={buyNow}>Buy</button>
+                <button
+                  className="btn primary"
+                  onClick={() =>
+                    addItem({
+                      id: "cap-beanie",
+                      name: "Cap / Beanie",
+                      unitPrice: "25.00",
+                    })
+                  }
+                >
+                  Add to cart
+                </button>
               </div>
             </article>
           </div>
         </div>
       </section>
+
+      <CartDrawer />
 
       <footer className="footer">
         <div className="container">
