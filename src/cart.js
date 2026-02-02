@@ -51,13 +51,19 @@ export async function estimateTotals(cart, shipping) {
 }
 
 export async function createPayPalOrder(cart) {
-  const cartToken = await ensureCartToken();
+  const cartToken = localStorage.getItem(CART_TOKEN_KEY);
+
+  console.log("CART TOKEN:", cartToken);
+
+  if (!cartToken) {
+    throw new Error("No cart token found before checkout");
+  }
 
   const res = await fetch(`${API_BASE}/paypal/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${cartToken}`,
+      "Authorization": `Bearer ${cartToken}`
     },
     body: JSON.stringify(cart),
   });
