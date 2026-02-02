@@ -458,6 +458,7 @@ export default function Home() {
               <video
                 ref={videoRef}
                 className="rbVideo"
+                autoPlay
                 muted
                 playsInline
                 preload="auto"
