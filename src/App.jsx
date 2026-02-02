@@ -8,6 +8,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/capture" element={<Capture />} />
+        <Route path="/success" element={<h1>Thank you for your order 🎉</h1>} />
       </Routes>
     </HashRouter>
   );
