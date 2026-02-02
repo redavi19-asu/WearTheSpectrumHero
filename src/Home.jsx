@@ -267,6 +267,19 @@ export default function Home() {
             </button>
           </div>
 
+          <div className="heroVideoWrap reveal">
+            <video
+              className="heroVideo"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+            >
+              <source src={`${BASE}assets/hero.mp4`} type="video/mp4" />
+            </video>
+          </div>
+
           <div className={`scrollHint ${reducedMotion ? "" : "bounce"}`}>
             <span>Scroll</span>
             <span className="arrow">↓</span>
@@ -452,7 +465,7 @@ export default function Home() {
               <video
                 ref={videoRef}
                 className="rbVideo"
-                src={`${BASE}assets/brain-scroll.mp4`}
+                src={`${BASE}assets/brain-scroll-ios.mp4`}
                 muted
                 playsInline
                 preload="auto"
