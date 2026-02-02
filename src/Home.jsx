@@ -15,7 +15,8 @@ async function buyNow() {
   localStorage.setItem("cartToken", cartData.cartToken);
 
   // 2. Create PayPal order
-  const orderRes = await fetch(`${API_BASE}/paypal/order`, {
+  console.log("🚀 Creating PayPal order");
+  const orderData = await fetch(`${API_BASE}/paypal/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,9 +28,11 @@ async function buyNow() {
       ],
       totals: { total: "25.00" }
     })
-  });
-
-  const orderData = await orderRes.json();
+  })
+    .then((res) => {
+      console.log("📦 PayPal order response", res);
+      return res.json();
+    });
   if (!orderData.ok || !orderData.approveUrl) {
     console.error(orderData);
     throw new Error("PayPal order failed");
