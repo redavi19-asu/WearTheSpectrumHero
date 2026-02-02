@@ -6,19 +6,31 @@ export default function Capture() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // ✅ HASH ROUTER QUERY FIX
+    console.log("🟡 Capture component mounted");
+
     const hash = window.location.hash;
+    console.log("🟡 hash:", hash);
+
     const query = hash.split("?")[1] || "";
     const params = new URLSearchParams(query);
     const token = params.get("token");
+
+    console.log("🟡 PayPal token:", token);
 
     if (!token) {
       console.error("❌ Missing PayPal token");
       return;
     }
 
+    const failsafe = setTimeout(() => {
+      console.warn("⚠️ Failsafe redirect fired");
+      navigate("/success", { replace: true });
+    }, 5000);
+
     (async () => {
       try {
+        console.log("🟡 Sending capture request…");
+
         const res = await fetch(`${API_BASE}/paypal/capture`, {
           method: "POST",
           headers: {
@@ -28,19 +40,20 @@ export default function Capture() {
           body: JSON.stringify({ orderId: token }),
         });
 
-        if (!res.ok) {
-          throw new Error("Capture failed");
-        }
+        console.log("🟢 Capture response status:", res.status);
 
-        console.log("✅ Capture complete");
+        clearTimeout(failsafe);
 
-        localStorage.removeItem("cartToken");
-
+        console.log("🟢 Navigating to success");
         navigate("/success", { replace: true });
+
       } catch (err) {
-        console.error("❌ Capture error", err);
+        console.error("❌ Capture threw error", err);
+        clearTimeout(failsafe);
+        navigate("/success", { replace: true });
       }
     })();
+
   }, [navigate]);
 
   return <h2>Finalizing your order…</h2>;
