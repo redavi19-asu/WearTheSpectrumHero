@@ -6,21 +6,33 @@ export function getCartToken() {
   return localStorage.getItem(CART_TOKEN_KEY);
 }
 
-export async function startCart() {
+async function getOrCreateCartToken() {
+  // 🔥 FORCE fresh token to kill all stale HMACs
+  localStorage.removeItem(CART_TOKEN_KEY);
+
   const res = await fetch(`${API_BASE}/cart/start`, { method: "POST" });
   const data = await res.json();
+
+  if (!data.ok || !data.cartToken) {
+    throw new Error("Failed to start cart");
+  }
+
   localStorage.setItem(CART_TOKEN_KEY, data.cartToken);
   return data.cartToken;
 }
 
+export async function startCart() {
+  return getOrCreateCartToken();
+}
+
 export async function estimateTotals(cart, shipping) {
-  const cartToken = await ensureCartToken();
+  const token = await getOrCreateCartToken();
 
   const res = await fetch(`${API_BASE}/paypal/estimate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${cartToken}`,
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify({
       items: cart.items,
@@ -30,23 +42,22 @@ export async function estimateTotals(cart, shipping) {
   });
 
   const data = await res.json();
-
-  if (!data.ok) {
-    throw new Error(data.error || "Estimate failed");
-  }
+  if (!data.ok) throw new Error(data.error || "Estimate failed");
 
   return data.totals;
 }
 
 export async function createPayPalOrder(cartPayload) {
-  let token = localStorage.getItem(CART_TOKEN_KEY);
-  if (!token) token = await startCart();
+  const token = await getOrCreateCartToken();
+
+  console.log("API_BASE =", API_BASE);
+  console.log("USING TOKEN =", token);
 
   const res = await fetch(`${API_BASE}/paypal/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify(cartPayload),
   });
