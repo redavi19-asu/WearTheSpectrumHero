@@ -151,6 +151,7 @@ export default function Home() {
   const videoRef = useRef(null);
   const lineProgress = useScrollProgress(lineSectionRef);
   const [isPinned, setIsPinned] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -447,15 +448,24 @@ export default function Home() {
           </div>
 
           <div className="ringBrainStage reveal">
-            <video
-              ref={videoRef}
-              className="rbVideo"
-              src={`${BASE}assets/brain-scroll.mp4`}
-              muted
-              playsInline
-              preload="auto"
-              poster={`${BASE}assets/spectrumhero.png`}
-            />
+            {!videoError ? (
+              <video
+                ref={videoRef}
+                className="rbVideo"
+                src={`${BASE}assets/brain-scroll.mp4`}
+                muted
+                playsInline
+                preload="auto"
+                poster={`${BASE}assets/spectrumhero.png`}
+                onError={() => setVideoError(true)}
+              />
+            ) : (
+              <img
+                className="rbVideo"
+                src={`${BASE}assets/spectrumhero.png`}
+                alt="Spectrum Hero patch"
+              />
+            )}
           </div>
 
           <div className="pinHint reveal">

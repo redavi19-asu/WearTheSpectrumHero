@@ -40,10 +40,10 @@ export default function CartDrawer() {
     <>
       {open && <div className="cartBackdrop" onClick={() => setOpen(false)} />}
 
-      <aside className={`cartDrawer ${open ? "open" : ""}`}>
+      <aside className={`cart-drawer ${open ? "open" : ""}`}>
         <header className="cartHeader">
           <h3>Your Cart</h3>
-          <button onClick={() => setOpen(false)}>✕</button>
+          <button className="cart-close" onClick={() => setOpen(false)}>✕</button>
         </header>
 
         <div className="cartItems">
