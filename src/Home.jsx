@@ -458,13 +458,14 @@ export default function Home() {
               <video
                 ref={videoRef}
                 className="rbVideo"
-                src={`${BASE}assets/brain-scroll-ios.mp4`}
                 muted
                 playsInline
                 preload="auto"
                 poster={`${BASE}assets/spectrumhero.png`}
                 onError={() => setVideoError(true)}
-              />
+              >
+                <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
+              </video>
             ) : (
               <img
                 className="rbVideo"
