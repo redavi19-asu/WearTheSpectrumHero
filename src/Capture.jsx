@@ -1,12 +1,16 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { API_BASE } from "./api.js";
+import { useNavigate } from "react-router-dom";
 
 export default function Capture() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    // 🔥 HASH ROUTER FIX
+    const hash = window.location.hash;
+    const queryString = hash.split("?")[1] || "";
+    const params = new URLSearchParams(queryString);
+
     const token = params.get("token");
 
     if (!token) {
@@ -25,11 +29,10 @@ export default function Capture() {
       .then((r) => r.json())
       .then((data) => {
         console.log("✅ Capture success", data);
-
         navigate("/success");
       })
       .catch(console.error);
-  }, [navigate]);
+  }, []);
 
   return <h2>Finalizing your order…</h2>;
 }
