@@ -7,14 +7,7 @@ import CartDrawer from "./CartDrawer.jsx";
 
 async function buyNow() {
   // 1. Start cart (token)
-  const cartRes = await fetch(`${API_BASE}/cart/start`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" }
-  });
-  const cartData = await cartRes.json();
-  if (!cartData.ok) throw new Error("Cart start failed");
-
-  localStorage.setItem("cartToken", cartData.cartToken);
+  const cartToken = await startCart();
 
   // 2. Create PayPal order
   console.log("🚀 Creating PayPal order");
@@ -22,7 +15,7 @@ async function buyNow() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${cartData.cartToken}`
+      "Authorization": `Bearer ${cartToken}`
     },
     body: JSON.stringify({
       items: [
@@ -35,7 +28,7 @@ async function buyNow() {
       console.log("📦 PayPal order response", res);
       return res.json();
     });
-  if (!orderData.ok || !orderData.approveUrl) {
+  if (!orderData.approveUrl) {
     console.error(orderData);
     throw new Error("PayPal order failed");
   }

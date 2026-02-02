@@ -6,24 +6,27 @@ export function getCartToken() {
   return localStorage.getItem(CART_TOKEN_KEY);
 }
 
-export async function startCart() {
+export async function ensureCartToken() {
+  let token = localStorage.getItem(CART_TOKEN_KEY);
+  if (token) return token;
+
   const res = await fetch(`${API_BASE}/cart/start`, {
     method: "POST",
   });
 
   const data = await res.json();
-
-  if (!data.ok) {
-    throw new Error("Failed to start cart");
-  }
+  if (!data.ok) throw new Error("Failed to start cart");
 
   localStorage.setItem(CART_TOKEN_KEY, data.cartToken);
   return data.cartToken;
 }
 
+export async function startCart() {
+  return ensureCartToken();
+}
+
 export async function estimateTotals(cart, shipping) {
-  const cartToken = getCartToken();
-  if (!cartToken) throw new Error("Missing cart token");
+  const cartToken = await ensureCartToken();
 
   const res = await fetch(`${API_BASE}/paypal/estimate`, {
     method: "POST",
@@ -47,9 +50,8 @@ export async function estimateTotals(cart, shipping) {
   return data.totals;
 }
 
-export async function createPayPalOrder(cart, shipping, totals) {
-  const cartToken = getCartToken();
-  if (!cartToken) throw new Error("Missing cart token");
+export async function createPayPalOrder(cart) {
+  const cartToken = await ensureCartToken();
 
   const res = await fetch(`${API_BASE}/paypal/order`, {
     method: "POST",
@@ -57,17 +59,13 @@ export async function createPayPalOrder(cart, shipping, totals) {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${cartToken}`,
     },
-    body: JSON.stringify({
-      items: cart.items,
-      shipping,
-      totals,
-      currency: "USD",
-    }),
+    body: JSON.stringify(cart),
   });
 
   const data = await res.json();
 
-  if (!data.ok || !data.approveUrl) {
+  if (!res.ok || !data.approveUrl) {
+    console.error("Order error:", data);
     throw new Error("PayPal order creation failed");
   }
 

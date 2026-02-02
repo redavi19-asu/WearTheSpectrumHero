@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { API_BASE } from "./api.js";
 import { useNavigate } from "react-router-dom";
+import { getCartToken } from "./cart.js";
 
 export default function Capture() {
   const navigate = useNavigate();
@@ -31,11 +32,19 @@ export default function Capture() {
       try {
         console.log("🟡 Sending capture request…");
 
+        const cartToken = getCartToken();
+        if (!cartToken) {
+          console.error("❌ Missing cart token for capture");
+          clearTimeout(failsafe);
+          navigate("/success", { replace: true });
+          return;
+        }
+
         const res = await fetch(`${API_BASE}/paypal/capture`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("cartToken")}`,
+            "Authorization": `Bearer ${cartToken}`,
           },
           body: JSON.stringify({ orderId: token }),
         });

@@ -7,29 +7,28 @@ export default function CartDrawer() {
   async function checkout() {
     if (!items.length) return;
 
+    const total = items
+      .reduce((sum, i) => sum + parseFloat(i.unitPrice) * i.qty, 0)
+      .toFixed(2);
+
     const cart = {
       items: items.map((i) => ({
         name: i.name,
         unitPrice: i.unitPrice,
         qty: i.qty,
       })),
-    };
-
-    const shipping = null;
-
-    const total = items
-      .reduce((sum, i) => sum + parseFloat(i.unitPrice) * i.qty, 0)
-      .toFixed(2);
-
-    const totals = {
-      subtotal: total,
-      shipping: "0.00",
-      tax: "0.00",
-      total,
+      shipping: null,
+      totals: {
+        subtotal: total,
+        shipping: "0.00",
+        tax: "0.00",
+        total,
+      },
+      currency: "USD",
     };
 
     try {
-      await createPayPalOrder(cart, shipping, totals);
+      await createPayPalOrder(cart);
     } catch (err) {
       console.error("Checkout failed", err);
       alert("Checkout failed. Try again.");
