@@ -816,6 +816,24 @@ body{
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+.cart-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9998;
+}
+
 .cartItems {
   flex: 1;
   padding: 16px;
