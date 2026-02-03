@@ -258,40 +258,6 @@ export default function Home() {
   const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
-    const section = lineSectionRef.current;
-    if (!video || !section) return;
-
-    let rafId = null;
-    let running = true;
-
-    const scrub = () => {
-      if (!running) return;
-
-      const rect = section.getBoundingClientRect();
-      const viewHeight = window.innerHeight;
-      const scrollLength = rect.height - viewHeight;
-
-      if (scrollLength > 0 && video.duration) {
-        const progress = Math.min(
-          Math.max(-rect.top / scrollLength, 0),
-          1
-        );
-        video.currentTime = progress * video.duration;
-      }
-
-      rafId = requestAnimationFrame(scrub);
-    };
-
-    rafId = requestAnimationFrame(scrub);
-
-    return () => {
-      running = false;
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
-
-  useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
 
@@ -645,7 +611,7 @@ export default function Home() {
             controls
             poster={`${BASE}assets/spectrumhero.png`}
           >
-            <source src={`${BASE}brain-scroll-ios.mp4`} type="video/mp4" />
+            <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
           </video>
 
           <div className="pinHint reveal">
