@@ -37,10 +37,21 @@ export default function CartDrawer() {
     };
 
     try {
+      console.log("CHECKOUT CART", cart);
+      console.log("TOTALS", {
+        subtotal: cartSubtotal,
+        shipping,
+        tax,
+        total: cartTotal
+      });
       await createPayPalOrder(cart);
     } catch (err) {
-      console.error("Checkout error:", err);
-      alert(`Checkout failed: ${err.message || "Try again."}`);
+      console.error("CHECKOUT ERROR:", err);
+      alert(
+        typeof err === "string"
+          ? err
+          : err?.message || JSON.stringify(err)
+      );
     }
   }
 
