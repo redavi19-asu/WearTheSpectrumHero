@@ -5,6 +5,7 @@ import { startCart } from "./cart.js";
 import { useCart } from "./cartState";
 import CartDrawer from "./CartDrawer.jsx";
 import BrainScroll from "./BrainScroll.jsx";
+import BrainScroll from "./BrainScroll.jsx";
 
 const WORKER_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
 
@@ -492,59 +493,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
-      <section ref={lineSectionRef} className="pinSection" id="story-c">
-        <div
-          className={`pinSticky ${isPinned ? "isPinned" : ""}`}
-          style={{
-            "--profile": Math.min(1, Math.max(0, (lineProgress - 0.08) / 0.40)),
-            "--brain": Math.min(1, Math.max(0, (lineProgress - 0.35) / 0.65)),
-          }}
-        >
-          <div className="pinCopy">
-            <h2 className="h2 reveal">This is what “autism” can feel like.</h2>
-
-            <p className="p reveal">
-              Not broken. Not less. Just different wiring — processing more, sensing more,
-              noticing patterns other people miss.
-            </p>
-
-            <p className="p reveal">
-              Autism isn’t a defect. It’s a different operating system.
-              Different sensory input. Different communication styles.
-              Different rhythm — with real strengths: focus, honesty,
-              creativity, deep interests.
-            </p>
-
-            <p className="p reveal">
-              Keep scrolling. The colors keep moving, because the brain never stops working.
-              And as it forms, the message is simple:
-              <span className="quote"> make space, be patient, lead with kindness.</span>
-            </p>
-
-            <p className="p subtle reveal">
-              Some days the world is too loud. Some days it’s too fast.
-              This is a reminder that understanding is a superpower —
-              and support changes everything.
-            </p>
-          </div>
-
-          <video
-            ref={videoRef}
-            className="rbVideo"
-            muted
-            playsInline
-            preload="auto"
-          >
-            <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
-          </video>
-
-          <div className="pinHint reveal">
-            <span className="chip dot blue">keep scrolling</span>
-            <span className="chip dot green">watch it form</span>
-          </div>
-        </div>
-      </section>
+      {/* STORY C — BRAIN SCROLL */}
+      <BrainScroll />
 
       {/* PATCH SECTION (KEEP GLOW + CLEAN BLACK) */}
       <section id="patch" className="section">
