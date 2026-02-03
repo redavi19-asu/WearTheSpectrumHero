@@ -1412,3 +1412,44 @@ body{
     margin-right: auto;
   }
 }
+
+/* ===== iPad PORTRAIT HARD FIX ===== */
+@media (min-width: 768px) and (max-width: 900px) and (orientation: portrait) {
+
+  /* 1. Stop horizontal clipping */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  /* 2. Force page to center */
+  .page {
+    max-width: 100vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 3. Center ALL main layout containers */
+  .heroInner,
+  .container,
+  .split,
+  .pinSticky {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 4. Neutralize left-shift transforms */
+  .heroInner,
+  .brainCopy,
+  .pinCopy {
+    transform: none !important;
+  }
+
+  /* 5. Add safe side padding so text never clips */
+  .heroInner,
+  .container,
+  .pinSticky {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
