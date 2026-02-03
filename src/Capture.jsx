@@ -1,69 +1,45 @@
-import { useEffect } from "react";
-import { API_BASE } from "./api.js";
-import { useNavigate } from "react-router-dom";
-import { getCartToken } from "./cart.js";
+import { useEffect, useState } from "react";
+import { API_BASE } from "./api";
+import { useCart } from "./cartState";
 
 export default function Capture() {
-  const navigate = useNavigate();
+  const [orderId, setOrderId] = useState(null);
+  const { clearCart } = useCart();
 
   useEffect(() => {
-    console.log("🟡 Capture component mounted");
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("token"); // PayPal sends ?token=
 
-    const hash = window.location.hash;
-    console.log("🟡 hash:", hash);
+    if (!orderId) return;
 
-    const query = hash.split("?")[1] || "";
-    const params = new URLSearchParams(query);
-    const token = params.get("token");
+    fetch(`${API_BASE}/paypal/capture`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId }),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        clearCart();
+        setOrderId(orderId);
+      });
+  }, [clearCart]);
 
-    console.log("🟡 PayPal token:", token);
+  return (
+    <div className="page successPage">
+      <h1>Thank you for your order 🎉</h1>
 
-    if (!token) {
-      console.error("❌ Missing PayPal token");
-      return;
-    }
+      {orderId && (
+        <p className="p subtle">
+          Order ID: <strong>{orderId}</strong>
+        </p>
+      )}
 
-    const failsafe = setTimeout(() => {
-      console.warn("⚠️ Failsafe redirect fired");
-      navigate("/success", { replace: true });
-    }, 5000);
-
-    (async () => {
-      try {
-        console.log("🟡 Sending capture request…");
-
-        const cartToken = getCartToken();
-        if (!cartToken) {
-          console.error("❌ Missing cart token for capture");
-          clearTimeout(failsafe);
-          navigate("/success", { replace: true });
-          return;
-        }
-
-        const res = await fetch(`${API_BASE}/paypal/capture`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${cartToken}`,
-          },
-          body: JSON.stringify({ orderId: token }),
-        });
-
-        console.log("🟢 Capture response status:", res.status);
-
-        clearTimeout(failsafe);
-
-        console.log("🟢 Navigating to success");
-        navigate("/success", { replace: true });
-
-      } catch (err) {
-        console.error("❌ Capture threw error", err);
-        clearTimeout(failsafe);
-        navigate("/success", { replace: true });
-      }
-    })();
-
-  }, [navigate]);
-
-  return <h2>Finalizing your order…</h2>;
+      <button
+        className="btn primary"
+        onClick={() => (window.location.href = "/#/merch")}
+      >
+        Continue shopping
+      </button>
+    </div>
+  );
 }

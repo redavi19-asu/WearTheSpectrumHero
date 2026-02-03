@@ -121,6 +121,9 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [productsError, setProductsError] = useState("");
+  const [heroVideoError, setHeroVideoError] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   useEffect(() => {
     const history = window.history;
@@ -176,13 +179,49 @@ export default function Home() {
 
   const formatPrice = (cents = 0) => ((cents || 0) / 100).toFixed(2);
 
-  const handleAddToCart = (product, price) => {
-    addItem({
-      id: product.id,
-      name: product.title,
-      unitPrice: price,
-    });
+  const handleProductClick = (product) => {
+    const initialVariant =
+      product.variants?.find((v) => v.is_available) || product.variants?.[0] || null;
+    setSelectedProduct(product);
+    setSelectedVariant(initialVariant);
   };
+
+  const handleVariantChange = (variantId) => {
+    if (!selectedProduct) return;
+    const next = selectedProduct.variants?.find(
+      (v) => v.id === variantId || `${v.id}` === `${variantId}`
+    );
+    if (next) setSelectedVariant(next);
+  };
+
+  const handleAddSelectedToCart = () => {
+    if (!selectedProduct || !selectedVariant) return;
+
+    const unitPriceNumber = Number(selectedVariant.price || 0) / 100;
+    const imageUrl =
+      selectedProduct.images?.find((i) => i.is_default)?.src ||
+      selectedProduct.images?.[0]?.src ||
+      `${BASE}assets/spectrumhero.png`;
+    addItem({
+      productId: selectedProduct.id,
+      variantId: selectedVariant.id,
+      title: selectedProduct.title,
+      variantTitle: selectedVariant.title,
+      price: unitPriceNumber,
+      qty: 1,
+      image: imageUrl,
+    });
+
+    setSelectedProduct(null);
+    setSelectedVariant(null);
+  };
+
+  const variantOptions = useMemo(() => {
+    if (!selectedProduct?.variants) return [];
+    const available = selectedProduct.variants.filter((v) => v.is_available);
+    const base = available.length ? available : selectedProduct.variants;
+    return base.filter((variant, idx, arr) => arr.findIndex((v) => v.id === variant.id) === idx);
+  }, [selectedProduct]);
 
   const lineSectionRef = useRef(null);
   const videoRef = useRef(null);
@@ -200,6 +239,8 @@ export default function Home() {
       v.currentTime = t * v.duration;
     };
 
+    v.autoplay = false;
+    v.pause();
     sync();
     v.addEventListener("loadedmetadata", sync);
     return () => v.removeEventListener("loadedmetadata", sync);
@@ -304,18 +345,22 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="heroVideoWrap reveal">
-            <video
-              className="heroVideo"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-            >
-              <source src={`${BASE}assets/hero.mp4`} type="video/mp4" />
-            </video>
-          </div>
+          {!heroVideoError && (
+            <div className="heroVideoWrap video-wrap reveal">
+              <video
+                className="heroVideo"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                poster={`${BASE}assets/spectrumhero.png`}
+                onError={() => setHeroVideoError(true)}
+              >
+                <source src={`${BASE}assets/hero.mp4`} type="video/mp4" />
+              </video>
+            </div>
+          )}
 
           <div className={`scrollHint ${reducedMotion ? "" : "bounce"}`}>
             <span>Scroll</span>
@@ -502,7 +547,6 @@ export default function Home() {
               <video
                 ref={videoRef}
                 className="rbVideo"
-                autoPlay
                 muted
                 playsInline
                 preload="auto"
@@ -607,7 +651,11 @@ export default function Home() {
               const desc = product.title?.split("|")?.[0]?.trim() || product.title || "Patch-forward drop.";
 
               return (
-                <article key={product.id} className="product">
+                <article
+                  key={product.id}
+                  className="product"
+                  onClick={() => handleProductClick(product)}
+                >
                   <div className="productMedia">
                     <img src={img} alt={product.title} loading="lazy" />
                   </div>
@@ -621,21 +669,84 @@ export default function Home() {
                   </div>
 
                   <p className="p subtle productDesc">{desc}</p>
-
-                  <div className="productActions">
-                    <button
-                      className="btn primary"
-                      onClick={() => handleAddToCart(product, price)}
-                    >
-                      Add to cart
-                    </button>
-                  </div>
                 </article>
               );
             })}
           </div>
         </div>
       </section>
+
+      {selectedProduct && (
+        <div
+          className="modal-backdrop"
+          onClick={() => {
+            setSelectedProduct(null);
+            setSelectedVariant(null);
+          }}
+        >
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modalHeader">
+              <h2>{selectedProduct.title}</h2>
+              <button
+                className="modalClose"
+                onClick={() => {
+                  setSelectedProduct(null);
+                  setSelectedVariant(null);
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="modalBody">
+              <div className="modalMedia">
+                <img
+                  src={
+                    selectedProduct.images?.find((i) => i.is_default)?.src ||
+                    selectedProduct.images?.[0]?.src ||
+                    `${BASE}assets/spectrumhero.png`
+                  }
+                  alt={selectedProduct.title}
+                />
+              </div>
+
+              <p className="p subtle productDesc">
+                {selectedProduct.title?.split("|")?.[0]?.trim() || selectedProduct.title}
+              </p>
+
+              <p className="priceRow">
+                {selectedVariant ? `$${formatPrice(selectedVariant.price)}` : "--"}
+              </p>
+
+              {selectedProduct.variants?.length ? (
+                <label className="variantLabel">
+                  Size / variant
+                  <select
+                    value={selectedVariant ? `${selectedVariant.id}` : ""}
+                    onChange={(e) => handleVariantChange(e.target.value)}
+                  >
+                    {variantOptions.map((variant) => (
+                      <option key={variant.id} value={variant.id}>
+                        {variant.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <p className="p subtle">No variants available.</p>
+              )}
+
+              <button
+                className="btn primary fullWidth"
+                onClick={handleAddSelectedToCart}
+                disabled={!selectedVariant}
+              >
+                Add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <CartDrawer />
 

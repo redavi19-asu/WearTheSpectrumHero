@@ -1,0 +1,89 @@
+import { useEffect, useState } from "react";
+import { API_BASE } from "./api.js";
+import { useNavigate } from "react-router-dom";
+import { getCartToken } from "./cart.js";
+import { useCart } from "./cartState";
+
+export default function Capture() {
+  const navigate = useNavigate();
+  const { clearCart } = useCart();
+  const [status, setStatus] = useState("loading");
+  const [orderId, setOrderId] = useState("");
+  const [captured, setCaptured] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const hashQuery = window.location.hash.split("?")[1] || "";
+    const searchQuery = window.location.search.replace(/^\?/, "");
+    const params = new URLSearchParams(hashQuery || searchQuery);
+    const token = params.get("token");
+
+    if (!token) {
+      setStatus("error");
+      return;
+    }
+
+    setOrderId(token);
+
+    if (!token || captured) return;
+
+    (async () => {
+      try {
+        const cartToken = getCartToken();
+        if (!cartToken) {
+          setStatus("error");
+          return;
+        }
+
+        const res = await fetch(`${API_BASE}/paypal/capture`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${cartToken}`,
+          },
+          body: JSON.stringify({ orderId: token }),
+        });
+
+        if (!res.ok) {
+          setStatus("error");
+          return;
+        }
+
+        clearCart();
+        setCaptured(true);
+        setStatus("success");
+      } catch (err) {
+        setStatus("error");
+      }
+    })();
+
+  }, [clearCart, captured]);
+
+  if (status === "success") {
+    return (
+      <div className="success">
+        <h1>Thank you for your order 🎉</h1>
+        <p>Order ID:</p>
+        <code>{orderId}</code>
+        <button className="btn primary" onClick={() => navigate("/")}>Continue shopping</button>
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="page">
+        <section className="section">
+          <div className="container">
+            <h1>We couldn’t finalize your order</h1>
+            <p>Please contact support or try again.</p>
+            <button className="btn" onClick={() => navigate("/")}>Return home</button>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  return <h2>Finalizing your order…</h2>;
+}

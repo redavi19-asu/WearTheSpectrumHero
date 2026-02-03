@@ -285,7 +285,7 @@ body{
 }
 
 .scrollHint{
-  margin-top: 26px;
+  margin-top: 4px;
   display:inline-flex;
   flex-direction:column;
   gap:6px;
@@ -300,6 +300,24 @@ body{
 @keyframes bounce{
   0%,100%{ transform: translateY(0); opacity:.75; }
   50%{ transform: translateY(6px); opacity:1; }
+}
+
+@media (min-width: 769px){
+  .heroVideoWrap{
+    display:block;
+    height: auto;
+    max-height: none;
+  }
+
+  .heroVideo{
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .hero .scrollHint{
+    margin-top: -6px;
+  }
 }
 
 .section{
@@ -350,10 +368,27 @@ body{
 
 .visual{
   display:flex;
+  justify-content:center;
+  align-items:center;
+}
 
 .heroVideoWrap{
-  margin: 28px auto 0;
+  margin: 24px auto 0;
   width: min(980px, 100%);
+}
+
+.video-wrap {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 64px;
+  padding-bottom: 48px;
+  overflow: visible;
+}
+
+.video-wrap video {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .heroVideo{
@@ -363,9 +398,6 @@ body{
   box-shadow: 0 20px 60px rgba(0,0,0,.45);
   display: block;
   background: #000;
-}
-  justify-content:center;
-  align-items:center;
 }
 
 .patchStage{
@@ -575,7 +607,10 @@ body{
   display:flex;
   flex-direction:column;
   min-height: 220px;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
 }
+.product:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.05); }
 .productMedia{
   width:100%;
   aspect-ratio: 1 / 1;
@@ -711,6 +746,29 @@ body{
   line-height:1.6;
 }
 
+.success {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+.successPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #fff;
+  text-align: center;
+  padding: 24px;
+}
+
 /* ===== PINNED SECTION C (ring → brain) ===== */
 .pinSection{
   display: block;          /* avoid flex quirks that can break sticky */
@@ -761,13 +819,13 @@ body{
   display: block;
 }
 
-.rbVideo{
-  width: 92%;
-  height: 92%;
-  display:block;
+.rbVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;        /* NOT cover */
+  max-height: 100%;
   border-radius: 18px;
-  object-fit: contain;
-  filter: drop-shadow(0 18px 40px rgba(0,0,0,.7));
+  display: block;
 }
 
 /* Shared stroke style */
@@ -908,12 +966,132 @@ body{
   padding: 16px;
 }
 
-.cartItem {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
 .checkoutBtn {
   margin: 16px;
 }
+
+/* Cart item styles */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.cart-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #111;
+  margin-right: 12px;
+}
+
+.cart-item-info {
+  font-size: 14px;
+}
+
+.cart-variant {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.cart-price {
+  margin-top: 4px;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 16px;
+}
+
+.remove-btn {
+  background: none;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 1000;
+}
+
+.modal {
+  background: #0b0b0b;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 22px 60px rgba(0,0,0,.55);
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modalMedia {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+}
+.modalMedia img{ width:100%; height:100%; object-fit: cover; display:block; }
+
+.priceRow {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 4px 0;
+}
+
+.variantLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(255,255,255,.82);
+  font-weight: 600;
+}
+
+.variantLabel select {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  font-weight: 600;
+}
+
+.fullWidth { width: 100%; justify-content: center; text-align: center; }
