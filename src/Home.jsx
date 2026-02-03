@@ -605,7 +605,7 @@ export default function Home() {
           <div className="ringBrainStage">
             <video
               className="rbVideo"
-              src="/WearTheSpectrumHero/brain-scroll-ios.mp4"
+              src={`${import.meta.env.BASE_URL}brain-scroll-ios.mp4`}
               muted
               playsInline
               preload="auto"
