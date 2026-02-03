@@ -608,21 +608,16 @@ export default function Home() {
                 <video
                   ref={videoRef}
                   className="rbVideo"
+                  src={`${BASE}assets/brain-scroll-ios.mp4`}
                   muted
                   playsInline
-                  webkit-playsinline="true"
-                  preload="metadata"
+                  preload="auto"
                   onError={() => setVideoError(true)}
-                >
-                  <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
-                  <track kind="captions" />
-                </video>
+                />
               ) : null}
-              <img
-                className="rbPatch"
-                src={`${BASE}assets/spectrumhero.png`}
-                alt="Spectrum Hero Patch"
-              />
+              <div className="rbPatch">
+                <img src={`${BASE}assets/spectrumhero.png`} alt="Spectrum Hero Patch" />
+              </div>
             </div>
           </div>
 
