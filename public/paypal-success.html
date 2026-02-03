@@ -58,7 +58,7 @@ h1{margin-top:0}
 </div>
 
 <script>
-const WORKER_BASE = "https://YOUR-WORKER-NAME.workers.dev";
+const API_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
 
 (async function () {
   const params = new URLSearchParams(window.location.search);
@@ -74,9 +74,12 @@ const WORKER_BASE = "https://YOUR-WORKER-NAME.workers.dev";
     "Order ID: " + orderId;
 
   try {
-    await fetch(`${WORKER_BASE}/paypal/capture`, {
+    await fetch(`${API_BASE}/paypal/capture`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("cartToken")}`
+      },
       body: JSON.stringify({ orderId })
     });
   } catch (e) {

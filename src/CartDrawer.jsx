@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCart } from "./cartState";
-import { createPayPalOrder, estimateTotals } from "./cart";
+import { createPayPalOrder } from "./cart";
 
 export default function CartDrawer() {
   const {
@@ -85,7 +85,6 @@ export default function CartDrawer() {
     };
 
     try {
-      await estimateTotals(cart, shipping);
       console.log("CHECKOUT CART", cart);
       console.log("TOTALS", {
         subtotal: cartSubtotal,

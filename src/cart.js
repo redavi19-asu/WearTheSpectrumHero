@@ -62,28 +62,6 @@ export async function getPrintifyQuote(cart) {
   return data; // { shipping, tax, currency }
 }
 
-export async function estimateTotals(cart, shipping) {
-  const token = await getOrCreateCartToken();
-
-  const res = await fetch(`${API_BASE}/paypal/estimate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      items: cart.items,
-      shipping,
-      currency: "USD",
-    }),
-  });
-
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || "Estimate failed");
-
-  return data.totals;
-}
-
 export async function createPayPalOrder(cartPayload) {
   const token = await getOrCreateCartToken();
 
