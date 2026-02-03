@@ -1,5 +1,5 @@
 import { useCart } from "./cartState";
-import { createPayPalOrder } from "./cart";
+import { createPayPalOrder, getPrintifyQuote } from "./cart";
 
 export default function CartDrawer() {
   const {
@@ -26,20 +26,37 @@ export default function CartDrawer() {
         unitPrice: i.unitPrice,
         qty: i.qty,
       })),
-      totals: {
-        subtotal: cartSubtotal.toFixed(2),
-        shipping: shipping.toFixed(2),
-        tax: tax.toFixed(2),
-        total: cartTotal.toFixed(2),
-        currency,
-      },
       country: "US",
+      zip: "10001", // TEMP — later ask customer
     };
 
     try {
-      await createPayPalOrder(cart);
+      // 🔹 STEP 1: Get Printify shipping + tax
+      const quote = await getPrintifyQuote(cart);
+
+      const subtotal = items.reduce(
+        (s, i) => s + i.unitPrice * i.qty,
+        0
+      );
+
+      const totals = {
+        subtotal: subtotal.toFixed(2),
+        shipping: quote.shipping.toFixed(2),
+        tax: quote.tax.toFixed(2),
+        total: (
+          subtotal +
+          quote.shipping +
+          quote.tax
+        ).toFixed(2),
+        currency: quote.currency || "USD",
+      };
+
+      // 🔹 STEP 2: Send final totals to PayPal
+      await createPayPalOrder({ ...cart, totals });
+
     } catch (err) {
-      alert("Checkout failed. Try again.");
+      console.error(err);
+      alert("Checkout failed.");
     }
   }
 

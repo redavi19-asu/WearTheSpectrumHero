@@ -38,6 +38,30 @@ export async function startCart() {
   return getOrCreateCartToken();
 }
 
+export async function getPrintifyQuote(cart) {
+  const token = localStorage.getItem("cartToken");
+
+  const res = await fetch(`${API_BASE}/printify/quote`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      items: cart.items,
+      country: cart.country,
+      zip: cart.zip || "10001", // REQUIRED by Printify
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok || !data.ok) {
+    throw new Error("Printify quote failed");
+  }
+
+  return data; // { shipping, tax, currency }
+}
+
 export async function estimateTotals(cart, shipping) {
   const token = await getOrCreateCartToken();
 
