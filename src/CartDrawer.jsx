@@ -39,15 +39,14 @@ export default function CartDrawer() {
         0
       );
 
+      const shippingAmount = Number(quote.shipping) || 0;
+      const taxAmount = Number(quote.tax) || 0;
+
       const totals = {
         subtotal: subtotal.toFixed(2),
-        shipping: quote.shipping.toFixed(2),
-        tax: quote.tax.toFixed(2),
-        total: (
-          subtotal +
-          quote.shipping +
-          quote.tax
-        ).toFixed(2),
+        shipping: shippingAmount.toFixed(2),
+        tax: taxAmount.toFixed(2),
+        total: (subtotal + shippingAmount + taxAmount).toFixed(2),
         currency: quote.currency || "USD",
       };
 
@@ -55,8 +54,8 @@ export default function CartDrawer() {
       await createPayPalOrder({ ...cart, totals });
 
     } catch (err) {
-      console.error(err);
-      alert("Checkout failed.");
+      console.error("Checkout error:", err);
+      alert(`Checkout failed: ${err.message}`);
     }
   }
 
