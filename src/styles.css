@@ -1242,3 +1242,26 @@ body{
   max-width: 100%;
   box-sizing: border-box;
 }
+
+/* ===== SECTION C : MP4 ONLY ===== */
+
+.ringBrainStage {
+  width: min(520px, 92vw);
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.rbVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+
+  /* stability */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: paint layout size;
+}

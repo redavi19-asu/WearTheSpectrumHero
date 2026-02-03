@@ -602,16 +602,14 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="ringBrainStage reveal">
-            <div className="rbStage">
-              <video
-                className="rbVideo"
-                src="/brain-scroll-ios.mp4"
-                muted
-                playsInline
-                preload="auto"
-              />
-            </div>
+          <div className="ringBrainStage">
+            <video
+              className="rbVideo"
+              src="/WearTheSpectrumHero/brain-scroll-ios.mp4"
+              muted
+              playsInline
+              preload="auto"
+            />
           </div>
 
           <div className="pinHint reveal">
