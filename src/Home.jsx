@@ -637,11 +637,11 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="ringBrainStage">
+          <div className="video-section">
             <video
               ref={videoRef}
               className="rbVideo"
-              src={`${import.meta.env.BASE_URL}brain-scroll-ios.mp4`}
+              src="/brain-scroll-ios.mp4"
               muted
               playsInline
               preload="auto"

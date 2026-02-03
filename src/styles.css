@@ -846,22 +846,20 @@ body{
   will-change: transform;
 }
 
-.rbVideo {
-  position: absolute;
-  inset: 0;
+.video-section {
+  width: 100%;
+  max-width: 900px;        /* 👈 makes it bigger */
+  margin: 4rem auto;
+  aspect-ratio: 16 / 9;    /* 👈 removes square look */
+  position: relative;
+}
 
+.rbVideo {
   width: 100%;
   height: 100%;
-
-  object-fit: contain;
-
-  z-index: 1;
-
-  transform: translateZ(0);
-  will-change: transform;
-
-  backface-visibility: hidden;
-  contain: paint layout size;
+  object-fit: contain;     /* 👈 no cropping */
+  border-radius: 18px;
+  display: block;
 }
 
 .rbPatch {
