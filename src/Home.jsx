@@ -603,11 +603,11 @@ export default function Home() {
           </div>
 
           <div className="ringBrainStage reveal">
-            <div className="patchStage">
+            <div className="rbStage">
               {!videoError ? (
                 <video
                   ref={videoRef}
-                  className="patchVideo"
+                  className="rbVideo"
                   muted
                   playsInline
                   webkit-playsinline="true"
@@ -619,9 +619,9 @@ export default function Home() {
                 </video>
               ) : null}
               <img
-                className="patchImg"
+                className="rbPatch"
                 src={`${BASE}assets/spectrumhero.png`}
-                alt="Spectrum Hero patch"
+                alt="Spectrum Hero Patch"
               />
             </div>
           </div>
