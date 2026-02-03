@@ -637,16 +637,15 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="video-section">
-            <video
-              ref={videoRef}
-              className="rbVideo"
-              src="/brain-scroll-ios.mp4"
-              muted
-              playsInline
-              preload="auto"
-            />
-          </div>
+          <video
+            ref={videoRef}
+            className="rbVideo"
+            src="/brain-scroll-ios.mp4"
+            muted
+            playsInline
+            preload="auto"
+            controls
+          />
 
           <div className="pinHint reveal">
             <span className="chip dot blue">keep scrolling</span>
