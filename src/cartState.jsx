@@ -5,6 +5,11 @@ const CartContext = createContext(null);
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
+  const [quote, setQuote] = useState({
+    shipping: 0,
+    tax: 0,
+    currency: "USD",
+  });
 
   /**
    * item shape (LOCKED):
@@ -88,6 +93,38 @@ export function CartProvider({ children }) {
     0
   );
 
+  async function requestQuote(zip = "20001", country = "US") {
+    if (!items.length) return;
+
+    const tokenRes = await fetch(
+      "https://mutts-paypal.ryanedavis.workers.dev/cart/start",
+      { method: "POST" }
+    );
+    const tokenData = await tokenRes.json();
+
+    const res = await fetch(
+      "https://mutts-paypal.ryanedavis.workers.dev/printify/quote",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenData.cartToken}`,
+        },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            variantId: i.variantId,
+            qty: i.qty,
+          })),
+          zip,
+          country,
+        }),
+      }
+    );
+
+    const data = await res.json();
+    if (data.ok) setQuote(data);
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -98,6 +135,8 @@ export function CartProvider({ children }) {
         removeItem,
         clearCart,
         cartSubtotal,
+        quote,
+        requestQuote,
         open,
         setOpen,
       }}

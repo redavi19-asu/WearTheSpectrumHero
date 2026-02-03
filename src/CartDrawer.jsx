@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "./cartState";
 import { createPayPalOrder } from "./cart";
 
@@ -9,11 +9,17 @@ export default function CartDrawer() {
     incrementQty,
     decrementQty,
     cartSubtotal,
+    quote,
+    requestQuote,
     open,
     setOpen,
   } = useCart();
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (items.length) requestQuote();
+  }, [items]);
 
   async function checkout() {
     if (!items.length || loading) return;
@@ -110,8 +116,12 @@ export default function CartDrawer() {
 
         {items.length > 0 && (
           <div className="cart-total">
-            <span>Total</span>
-            <strong>${cartSubtotal.toFixed(2)}</strong>
+            <div>Subtotal: ${cartSubtotal.toFixed(2)}</div>
+            <div>Shipping: ${quote.shipping.toFixed(2)}</div>
+            <div>Tax: ${quote.tax.toFixed(2)}</div>
+            <strong>
+              Total: ${(cartSubtotal + quote.shipping + quote.tax).toFixed(2)}
+            </strong>
           </div>
         )}
 
