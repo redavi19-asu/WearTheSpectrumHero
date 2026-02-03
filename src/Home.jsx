@@ -640,12 +640,14 @@ export default function Home() {
           <video
             ref={videoRef}
             className="rbVideo"
-            src="/brain-scroll-ios.mp4"
             muted
             playsInline
             preload="auto"
             controls
-          />
+            poster={`${BASE}assets/spectrumhero.png`}
+          >
+            <source src={`${BASE}brain-scroll-ios.mp4`} type="video/mp4" />
+          </video>
 
           <div className="pinHint reveal">
             <span className="chip dot blue">keep scrolling</span>
