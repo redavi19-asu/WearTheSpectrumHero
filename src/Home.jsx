@@ -136,8 +136,7 @@ export default function Home() {
   const isNarrow = useIsNarrow();
   const { addItem } = useCart();
   const [products, setProducts] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  const [productsError, setProductsError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [heroVideoError, setHeroVideoError] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -159,12 +158,47 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const existing = localStorage.getItem("cartToken");
+    if (existing) return;
+    startCart().catch((err) => console.warn("startCart failed", err));
+  }, []);
+
+  useEffect(() => {
+    let alive = true; // 👈 guard
+
+    async function loadProducts() {
+      try {
+        setLoading(true);
+
+        const res = await fetch(`${API_BASE}/products`);
+        const json = await res.json();
+
+        if (!alive) return; // 👈 STOP if unmounted
+
+        setProducts(json.data || []);
+      } catch (err) {
+        if (!alive) return;
+        console.error("Failed to load products", err);
+        setProducts([]);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }
+
+    loadProducts();
+
+    return () => {
+      alive = false; // 👈 cleanup
+    };
+  }, []);
+
   // Handle scroll parameter after products load
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.split("?")[1]);
     const scrollTo = params.get("scroll");
 
-    if (scrollTo && !loadingProducts) {
+    if (scrollTo && !loading) {
       const el = document.getElementById(scrollTo);
       if (el) {
         setTimeout(() => {
@@ -172,40 +206,7 @@ export default function Home() {
         }, 100);
       }
     }
-  }, [loadingProducts]);  useEffect(() => {
-    const existing = localStorage.getItem("cartToken");
-    if (existing) return;
-    startCart().catch((err) => console.warn("startCart failed", err));
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchProducts() {
-      try {
-        setLoadingProducts(true);
-        setProductsError("");
-        const res = await fetch(`${WORKER_BASE}/printify/products`);
-        if (!res.ok) {
-          throw new Error(`Request failed: ${res.status}`);
-        }
-        const data = await res.json();
-        if (!cancelled) {
-          setProducts(data.products || []);
-        }
-      } catch (err) {
-        console.error("Failed to load products", err);
-        if (!cancelled) setProductsError("Could not load products right now.");
-      } finally {
-        if (!cancelled) setLoadingProducts(false);
-      }
-    }
-
-    fetchProducts();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  }, [loading]);
 
   const formatPrice = (cents = 0) => ((cents || 0) / 100).toFixed(2);
 
@@ -279,26 +280,25 @@ export default function Home() {
 
     if (reducedMotion) {
       el.scrollIntoView({ behavior: "auto", block: "start" });
-      return;
+    } else {
+      const startY = window.scrollY || window.pageYOffset;
+      const targetY = el.getBoundingClientRect().top + startY;
+      const distance = targetY - startY;
+      const duration = 900;
+      const startTime = performance.now();
+
+      const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const eased = easeInOut(progress);
+        window.scrollTo(0, startY + distance * eased);
+        if (progress < 1) requestAnimationFrame(step);
+      };
+
+      requestAnimationFrame(step);
     }
-
-    const startY = window.scrollY || window.pageYOffset;
-    const targetY = el.getBoundingClientRect().top + startY;
-    const distance = targetY - startY;
-    const duration = 900;
-    const startTime = performance.now();
-
-    const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-
-    const step = (now) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(1, elapsed / duration);
-      const eased = easeInOut(progress);
-      window.scrollTo(0, startY + distance * eased);
-      if (progress < 1) requestAnimationFrame(step);
-    };
-
-    requestAnimationFrame(step);
   };
 
   return (
@@ -540,25 +540,29 @@ export default function Home() {
           </div>
 
           <div id="products" className="product-grid reveal">
-            {loadingProducts && (
-              <p className="p subtle">Loading products...</p>
+            {loading && (
+              <p className="p subtle">Loading products…</p>
             )}
 
-            {productsError && (
-              <p className="p subtle errorText">{productsError}</p>
-            )}
-
-            {!loadingProducts && !productsError && products.length === 0 && (
+            {!loading && products.length === 0 && (
               <p className="p subtle">No products available yet.</p>
             )}
 
-            {!loadingProducts && !productsError && products.map((product) => {
-              const variant = product.variants?.find((v) => v.is_available) || product.variants?.[0];
+            {!loading && products.map((product) => {
+              const variant =
+                product.variants?.find((v) => v.is_available) ||
+                product.variants?.[0];
+
               const price = formatPrice(variant?.price);
+
               const img =
                 product.images?.find((i) => i.is_default)?.src ||
                 product.images?.[0]?.src;
-              const desc = product.title?.split("|")?.[0]?.trim() || product.title || "Patch-forward drop.";
+
+              const desc =
+                product.title?.split("|")?.[0]?.trim() ||
+                product.title ||
+                "Patch-forward drop.";
 
               return (
                 <article

@@ -1,2 +1,2 @@
-// Base URL for Spectrum Hero Printify proxy API
-export const API_BASE = "https://mutts-paypal.ryanedavis.workers.dev";
+// ✅ CORRECT — Spectrum Hero / PRINTIFY worker
+export const API_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
