@@ -58,7 +58,11 @@ export default function CartDrawer() {
 
           {items.map((item) => (
             <div key={item.variantId} className="cart-item">
-              <img src={item.image} alt={item.title} />
+              <img
+                src={item.image}
+                alt={item.title}
+                className="cart-thumb"
+              />
 
               <div>
                 <strong>{item.title}</strong>
