@@ -1326,7 +1326,19 @@ body{
 }
 
 .brainCopy {
-  max-width: 520px;
+  max-width: 560px;        /* keeps it readable */
+  padding-left: 2.5rem;   /* pulls it away from edge */
+}
+
+.brainCopy h2 {
+  font-size: 2.25rem;     /* headline */
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.brainCopy p {
+  font-size: 1.125rem;   /* body text */
+  line-height: 1.65;
 }
 
 .brainVideoWrap {
@@ -1338,5 +1350,18 @@ body{
 @media (max-width: 768px) {
   .brainSplit {
     grid-template-columns: 1fr;
+  }
+
+  .brainCopy {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .brainCopy h2 {
+    font-size: 1.75rem;
+  }
+
+  .brainCopy p {
+    font-size: 1.05rem;
   }
 }
