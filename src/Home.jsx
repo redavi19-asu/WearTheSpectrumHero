@@ -5,7 +5,6 @@ import { startCart } from "./cart.js";
 import { useCart } from "./cartState";
 import CartDrawer from "./CartDrawer.jsx";
 import BrainScroll from "./BrainScroll.jsx";
-import BrainScroll from "./BrainScroll.jsx";
 
 const WORKER_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
 
