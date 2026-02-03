@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Capture from "./Capture";
 
@@ -18,14 +19,29 @@ function Success() {
   );
 }
 
+function AppRoutes() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (sessionStorage.getItem("orderSuccess") === "1") {
+      sessionStorage.removeItem("orderSuccess");
+      navigate("/success", { replace: true });
+    }
+  }, [navigate]);
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/capture" element={<Capture />} />
+      <Route path="/success" element={<Success />} />
+    </Routes>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter basename="/WearTheSpectrumHero">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/capture" element={<Capture />} />
-        <Route path="/success" element={<Success />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

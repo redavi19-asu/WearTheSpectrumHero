@@ -19,7 +19,8 @@ export default function Capture() {
       body: JSON.stringify({ orderId }),
     })
       .then(() => {
-        window.location.hash = "#/success";
+        sessionStorage.setItem("orderSuccess", "1");
+        window.location.replace("#/success");
       })
       .catch(() => {
         window.location.hash = "#/error";
