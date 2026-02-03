@@ -221,7 +221,7 @@ export default function Home() {
   const handleAddSelectedToCart = () => {
     if (!selectedProduct || !selectedVariant) return;
 
-    const unitPriceNumber = Number(selectedVariant.price || 0) / 100;
+    const unitPrice = Number(selectedVariant.price || 0) / 100;
     const imageUrl =
       selectedProduct.images?.find((i) => i.is_default)?.src ||
       selectedProduct.images?.[0]?.src ||
@@ -231,7 +231,7 @@ export default function Home() {
       variantId: selectedVariant.id,
       title: selectedProduct.title,
       variantTitle: selectedVariant.title,
-      price: unitPriceNumber,
+      unitPrice: unitPrice,
       qty: 1,
       image: imageUrl,
     });

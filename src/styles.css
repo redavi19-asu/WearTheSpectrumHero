@@ -1028,6 +1028,39 @@ body{
   cursor: pointer;
 }
 
+.cart-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px;
+}
+
+.qty-btn {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.qty-btn:hover {
+  background: rgba(255,255,255,.2);
+}
+
+.qty-display {
+  min-width: 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
 /* Modal */
 .modal-backdrop {
   position: fixed;

@@ -6,24 +6,42 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
 
+  /**
+   * item shape (LOCKED):
+   * {
+   *   productId,
+   *   variantId,
+   *   title,
+   *   variantTitle,
+   *   unitPrice, // NUMBER (USD, dollars)
+   *   qty,       // INTEGER >= 1
+   *   image
+   * }
+   */
   const addItem = (item) => {
     const {
       productId,
       variantId,
       title,
       variantTitle,
-      price,
+      unitPrice,
       qty = 1,
       image,
     } = item;
 
-    if (variantId == null || productId == null) return items;
+    if (!productId || !variantId) return;
+
+    const cleanQty = Math.max(1, Number(qty) || 1);
+    const cleanPrice = Number(unitPrice) || 0;
 
     setItems((prev) => {
       const existing = prev.find((i) => i.variantId === variantId);
+
       if (existing) {
         return prev.map((i) =>
-          i.variantId === variantId ? { ...i, qty: i.qty + qty } : i
+          i.variantId === variantId
+            ? { ...i, qty: i.qty + cleanQty }
+            : i
         );
       }
 
@@ -34,8 +52,8 @@ export function CartProvider({ children }) {
           variantId,
           title,
           variantTitle,
-          price: Number(price) || 0,
-          qty,
+          unitPrice: cleanPrice,
+          qty: cleanQty,
           image,
         },
       ];
@@ -44,16 +62,45 @@ export function CartProvider({ children }) {
     setOpen(true);
   };
 
+  const incrementQty = (variantId) =>
+    setItems((prev) =>
+      prev.map((i) =>
+        i.variantId === variantId ? { ...i, qty: i.qty + 1 } : i
+      )
+    );
+
+  const decrementQty = (variantId) =>
+    setItems((prev) =>
+      prev.map((i) =>
+        i.variantId === variantId
+          ? { ...i, qty: Math.max(1, i.qty - 1) }
+          : i
+      )
+    );
+
   const removeItem = (variantId) =>
     setItems((prev) => prev.filter((i) => i.variantId !== variantId));
 
-  const removeFromCart = removeItem;
-
   const clearCart = () => setItems([]);
+
+  const cartSubtotal = items.reduce(
+    (sum, i) => sum + i.unitPrice * i.qty,
+    0
+  );
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, removeFromCart, clearCart, open, setOpen }}
+      value={{
+        items,
+        addItem,
+        incrementQty,
+        decrementQty,
+        removeItem,
+        clearCart,
+        cartSubtotal,
+        open,
+        setOpen,
+      }}
     >
       {children}
     </CartContext.Provider>
@@ -61,5 +108,7 @@ export function CartProvider({ children }) {
 }
 
 export function useCart() {
-  return useContext(CartContext);
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error("useCart must be used inside CartProvider");
+  return ctx;
 }
