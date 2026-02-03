@@ -598,9 +598,13 @@ export default function Home() {
             )}
 
             {!loadingProducts && !productsError && products.map((product) => {
-              const img = product.images?.[0]?.src || `${BASE}assets/spectrumhero.png`;
-              const price = formatPrice(product.variants?.[0]?.price);
-              const desc = product.description || "Patch-forward drop.";
+              const variant = product.variants?.find((v) => v.is_available) || product.variants?.[0];
+              const price = formatPrice(variant?.price);
+              const img =
+                product.images?.find((i) => i.is_default)?.src ||
+                product.images?.[0]?.src ||
+                `${BASE}assets/spectrumhero.png`;
+              const desc = product.title?.split("|")?.[0]?.trim() || product.title || "Patch-forward drop.";
 
               return (
                 <article key={product.id} className="product">
