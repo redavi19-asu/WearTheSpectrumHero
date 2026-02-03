@@ -50,7 +50,9 @@ export default function CartDrawer() {
       <aside className={`cart-drawer ${open ? "open" : ""}`}>
         <header className="cartHeader">
           <h3>Your Cart</h3>
-          <button onClick={() => setOpen(false)}>✕</button>
+          <button className="cart-close" onClick={() => setOpen(false)}>
+            ×
+          </button>
         </header>
 
         <div className="cartItems">

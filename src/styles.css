@@ -956,14 +956,17 @@ body{
 }
 
 .cart-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
+  background: transparent;
+  color: #fff;
   border: none;
-  color: white;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.cart-close:hover {
+  color: #ff4d6d;
 }
 
 .cart-overlay {
@@ -1160,10 +1163,16 @@ body{
   overflow: hidden;
 }
 
-.cart-item img {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
+/* === CART IMAGE HARD LIMIT === */
+
+.cart-item img,
+.cart-thumb {
+  width: 64px !important;
+  height: 64px !important;
+  max-width: 64px !important;
+  max-height: 64px !important;
+  object-fit: cover !important;
+  display: block;
   background: #111;
   border-radius: 8px;
   flex-shrink: 0;
