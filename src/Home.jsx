@@ -4,6 +4,7 @@ import { API_BASE } from "./api.js";
 import { startCart } from "./cart.js";
 import { useCart } from "./cartState";
 import CartDrawer from "./CartDrawer.jsx";
+import BrainScroll from "./BrainScroll.jsx";
 
 const WORKER_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
 
@@ -251,81 +252,7 @@ export default function Home() {
     return base.filter((variant, idx, arr) => arr.findIndex((v) => v.id === variant.id) === idx);
   }, [selectedProduct]);
 
-  const lineSectionRef = useRef(null);
-  const videoRef = useRef(null);
-  const lineProgress = useScrollProgress(lineSectionRef);
-  const [isPinned, setIsPinned] = useState(false);
-  const [videoError, setVideoError] = useState(false);
 
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-
-    const sync = () => {
-      if (!v.duration || Number.isNaN(v.duration)) return;
-      const t = Math.max(0, Math.min(1, lineProgress));
-      const targetTime = t * v.duration;
-      
-      // Only update if significantly different (avoid jank)
-      if (Math.abs(v.currentTime - targetTime) > 0.05) {
-        v.currentTime = targetTime;
-      }
-    };
-
-    // Force load on iOS
-    v.load();
-    v.autoplay = false;
-    v.pause();
-    
-    const loadedHandler = () => {
-      sync();
-      // Ensure video is ready on iOS
-      v.play().then(() => {
-        v.pause();
-        v.currentTime = 0;
-      }).catch(() => {
-        // Autoplay prevented, that's fine
-      });
-    };
-
-    v.addEventListener("loadedmetadata", loadedHandler);
-    v.addEventListener("canplay", sync);
-    
-    // Sync on every progress update
-    sync();
-
-    return () => {
-      v.removeEventListener("loadedmetadata", loadedHandler);
-      v.removeEventListener("canplay", sync);
-    };
-  }, [lineProgress]);
-
-  useEffect(() => {
-    const el = lineSectionRef.current;
-    if (!el) return;
-
-    const onScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-      const inside = rect.top <= 0 && rect.bottom >= vh;
-      setIsPinned(inside);
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isPinned) return;
-    const section = lineSectionRef.current;
-    if (!section) return;
-    section.querySelectorAll(".reveal").forEach((n) => n.classList.add("in"));
-  }, [isPinned]);
 
   const spectrumWord = useMemo(() => {
     const letters = "Spectrum".split("");
