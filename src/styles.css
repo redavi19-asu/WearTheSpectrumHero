@@ -1372,3 +1372,22 @@ body{
     font-size: 1.05rem;
   }
 }
+
+/* iPad PORTRAIT ONLY — re-center content */
+@media (min-width: 768px) and (max-width: 900px) and (orientation: portrait) {
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .brainCopy {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .split {
+    justify-content: center;
+  }
+}
