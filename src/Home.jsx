@@ -378,6 +378,7 @@ export default function Home() {
                 muted
                 loop
                 playsInline
+                webkit-playsinline="true"
                 preload="auto"
                 poster={`${BASE}assets/spectrumhero.png`}
                 onError={() => setHeroVideoError(true)}
@@ -574,6 +575,7 @@ export default function Home() {
                 className="rbVideo"
                 muted
                 playsInline
+                webkit-playsinline="true"
                 preload="auto"
                 poster={`${BASE}assets/spectrumhero.png`}
                 onError={() => setVideoError(true)}
