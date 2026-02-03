@@ -94,7 +94,7 @@ export default function CartDrawer() {
           </div>
         )}
 
-        <button disabled={!items.length} onClick={checkout}>
+        <button className="btn primary" disabled={!items.length} onClick={checkout}>
           Checkout
         </button>
       </aside>
