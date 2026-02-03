@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { API_BASE } from "./api";
+import { createContext, useContext, useState } from "react";
 
 const CartContext = createContext(null);
 
@@ -7,54 +6,18 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const [shipping, setShipping] = useState(0);
-  const [tax, setTax] = useState(0);
-  const [currency, setCurrency] = useState("USD");
+  const [currency] = useState("USD");
+
+  const SHIPPING_FLAT = 6.99;
 
   const cartSubtotal = items.reduce(
     (s, i) => s + i.unitPrice * i.qty,
     0
   );
 
+  const shipping = cartSubtotal > 0 ? SHIPPING_FLAT : 0;
+  const tax = 0;
   const cartTotal = cartSubtotal + shipping + tax;
-
-  // 🔁 LIVE PRINTIFY QUOTE
-  useEffect(() => {
-    if (!items.length) {
-      setShipping(0);
-      setTax(0);
-      return;
-    }
-
-    const token = localStorage.getItem("cartToken");
-    if (!token) return;
-
-    fetch(`${API_BASE}/printify/quote`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        items: items.map((i) => ({
-          variantId: i.variantId,
-          qty: i.qty,
-        })),
-        country: "US",
-      }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (!d.ok) return;
-        setShipping(Number(d.shipping || 0));
-        setTax(Number(d.tax || 0));
-        setCurrency(d.currency || "USD");
-      })
-      .catch(() => {
-        setShipping(0);
-        setTax(0);
-      });
-  }, [items]);
 
   const addItem = (item) => {
     setItems((prev) => {
@@ -92,8 +55,6 @@ export function CartProvider({ children }) {
 
   const clearCart = () => {
     setItems([]);
-    setShipping(0);
-    setTax(0);
   };
 
   return (

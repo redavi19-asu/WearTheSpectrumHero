@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useCart } from "./cartState";
-import { createPayPalOrder } from "./cart";
+import { createPayPalOrder, estimateTotals } from "./cart";
 
 export default function CartDrawer() {
   const {
@@ -8,7 +9,7 @@ export default function CartDrawer() {
     incrementQty,
     decrementQty,
     cartSubtotal,
-    shipping,
+    shipping: shippingCost,
     tax,
     cartTotal,
     currency,
@@ -16,8 +17,37 @@ export default function CartDrawer() {
     setOpen,
   } = useCart();
 
+  const [shippingForm, setShippingForm] = useState({
+    name: "",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "US",
+  });
+
+  const handleShippingChange = (field) => (event) => {
+    const { value } = event.target;
+    setShippingForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   async function checkout() {
     if (!items.length) return;
+
+    const shipping = {
+      name: shippingForm.name.trim(),
+      phone: shippingForm.phone.trim(),
+      address: {
+        address_line_1: shippingForm.addressLine1.trim(),
+        address_line_2: shippingForm.addressLine2.trim(),
+        admin_area_2: shippingForm.city.trim(),
+        admin_area_1: shippingForm.state.trim(),
+        postal_code: shippingForm.zip.trim(),
+        country_code: shippingForm.country.trim() || "US",
+      },
+    };
 
     const cart = {
       items: items.map((i) => ({
@@ -26,21 +56,40 @@ export default function CartDrawer() {
         unitPrice: i.unitPrice,
         qty: i.qty,
       })),
+      amount: {
+        value: cartTotal.toFixed(2),
+        breakdown: {
+          item_total: {
+            value: cartSubtotal.toFixed(2),
+            currency_code: "USD",
+          },
+          shipping: {
+            value: shippingCost.toFixed(2),
+            currency_code: "USD",
+          },
+          tax_total: {
+            value: "0.00",
+            currency_code: "USD",
+          },
+        },
+      },
       totals: {
         subtotal: cartSubtotal.toFixed(2),
-        shipping: shipping.toFixed(2),
+        shipping: shippingCost.toFixed(2),
         tax: tax.toFixed(2),
         total: cartTotal.toFixed(2),
         currency,
       },
+      shipping,
       country: "US",
     };
 
     try {
+      await estimateTotals(cart, shipping);
       console.log("CHECKOUT CART", cart);
       console.log("TOTALS", {
         subtotal: cartSubtotal,
-        shipping,
+        shipping: shippingCost,
         tax,
         total: cartTotal
       });
@@ -127,11 +176,99 @@ export default function CartDrawer() {
         </div>
 
         {items.length > 0 && (
+          <div className="shipping-form">
+            <h4>Shipping</h4>
+            <label>
+              Full name
+              <input
+                type="text"
+                value={shippingForm.name}
+                onChange={handleShippingChange("name")}
+                autoComplete="name"
+                required
+              />
+            </label>
+            <label>
+              Address line 1
+              <input
+                type="text"
+                value={shippingForm.addressLine1}
+                onChange={handleShippingChange("addressLine1")}
+                autoComplete="address-line1"
+                required
+              />
+            </label>
+            <label>
+              Address line 2
+              <input
+                type="text"
+                value={shippingForm.addressLine2}
+                onChange={handleShippingChange("addressLine2")}
+                autoComplete="address-line2"
+              />
+            </label>
+            <div className="shipping-grid">
+              <label>
+                City
+                <input
+                  type="text"
+                  value={shippingForm.city}
+                  onChange={handleShippingChange("city")}
+                  autoComplete="address-level2"
+                  required
+                />
+              </label>
+              <label>
+                State
+                <input
+                  type="text"
+                  value={shippingForm.state}
+                  onChange={handleShippingChange("state")}
+                  autoComplete="address-level1"
+                  required
+                />
+              </label>
+            </div>
+            <div className="shipping-grid">
+              <label>
+                ZIP
+                <input
+                  type="text"
+                  value={shippingForm.zip}
+                  onChange={handleShippingChange("zip")}
+                  autoComplete="postal-code"
+                  required
+                />
+              </label>
+              <label>
+                Country
+                <input
+                  type="text"
+                  value={shippingForm.country}
+                  onChange={handleShippingChange("country")}
+                  autoComplete="country"
+                  required
+                />
+              </label>
+            </div>
+            <label>
+              Phone (optional)
+              <input
+                type="tel"
+                value={shippingForm.phone}
+                onChange={handleShippingChange("phone")}
+                autoComplete="tel"
+              />
+            </label>
+          </div>
+        )}
+
+        {items.length > 0 && (
           <div className="cart-summary">
-            <div>Subtotal: {cartSubtotal.toFixed(2)}</div>
-            <div>Shipping: {shipping.toFixed(2)}</div>
-            <div>Tax: {tax.toFixed(2)}</div>
-            <strong>Total: {cartTotal.toFixed(2)}</strong>
+            <div>Subtotal: ${cartSubtotal.toFixed(2)}</div>
+            <div>Shipping: ${shippingCost.toFixed(2)}</div>
+            <div>Tax: $0.00</div>
+            <div className="total">Total: ${cartTotal.toFixed(2)}</div>
           </div>
         )}
 
