@@ -854,6 +854,7 @@ body{
   position: relative;
 }
 
+/* Brain scroll video — authoritative layer */
 .rbVideo {
   width: 90vw;
   max-width: 1000px;
@@ -862,6 +863,11 @@ body{
   object-fit: contain;
   display: block;
   margin: 4rem auto;
+  position: relative;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .rbPatch {
@@ -1261,4 +1267,18 @@ body{
   display: block;
   margin: 4rem auto;
   background: #000;
+  position: relative;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Keep other elements below video */
+.pinCopy,
+.pinHint,
+.reveal,
+.patchStage,
+.patchImg {
+  z-index: 1;
 }

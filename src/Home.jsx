@@ -608,7 +608,6 @@ export default function Home() {
             muted
             playsInline
             preload="auto"
-            controls
             poster={`${BASE}assets/spectrumhero.png`}
           >
             <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
