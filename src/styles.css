@@ -1317,3 +1317,26 @@ body{
   pointer-events: none;
   background: black;
 }
+
+.brainSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.brainCopy {
+  max-width: 520px;
+}
+
+.brainVideoWrap {
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile fallback */
+@media (max-width: 768px) {
+  .brainSplit {
+    grid-template-columns: 1fr;
+  }
+}

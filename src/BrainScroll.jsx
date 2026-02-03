@@ -47,22 +47,45 @@ export default function BrainScroll() {
 
   return (
     <section ref={sectionRef} className="brainScrollSection">
-      <video
-        ref={videoRef}
-        className="rbVideo"
-        muted
-        playsInline
-        preload="auto"
-        poster="/WearTheSpectrumHero/assets/spectrumhero.png"
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "block",
-          WebkitTransform: "translateZ(0)",
-        }}
-      >
-        <source src={`${import.meta.env.BASE_URL}assets/brain-scroll-ios.mp4`} type="video/mp4" />
-      </video>
+      <div className="pinSticky">
+        <div className="brainSplit">
+          
+          {/* STORY TEXT */}
+          <div className="brainCopy">
+            <h2>This is what autism can feel like</h2>
+
+            <p>
+              Not broken. Not less. Just different wiring — processing more,
+              sensing more, noticing patterns others might miss.
+            </p>
+
+            <p>
+              Autism isn’t a defect. It’s a different operating system.
+              Different inputs. Different rhythms. Different strengths.
+            </p>
+
+            <p>
+              Some days the world is too loud. Some days it’s too fast.
+              Understanding changes everything.
+            </p>
+          </div>
+
+          {/* VIDEO (UNCHANGED SIZE) */}
+          <div className="brainVideoWrap">
+            <video
+              ref={videoRef}
+              className="rbVideo"
+              muted
+              playsInline
+              preload="auto"
+              poster="/WearTheSpectrumHero/assets/spectrumhero.png"
+            >
+              <source src="/WearTheSpectrumHero/assets/brain-scroll-ios.mp4" type="video/mp4" />
+            </video>
+          </div>
+
+        </div>
+      </div>
     </section>
   );
 }
