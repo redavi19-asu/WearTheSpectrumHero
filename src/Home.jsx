@@ -229,8 +229,7 @@ export default function Home() {
     const unitPrice = Number(selectedVariant.price || 0) / 100;
     const imageUrl =
       selectedProduct.images?.find((i) => i.is_default)?.src ||
-      selectedProduct.images?.[0]?.src ||
-      `${BASE}assets/spectrumhero.png`;
+      selectedProduct.images?.[0]?.src;
     addItem({
       productId: selectedProduct.id,
       variantId: selectedVariant.id,
@@ -376,18 +375,6 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="visual reveal">
-            <div className="patchStage">
-              <div className="patchGlow" aria-hidden="true" />
-              <img
-                className="patchImg"
-                src={`${BASE}assets/spectrumhero.png`}
-                alt="Spectrum Hero patch"
-                width="1024"
-                height="1024"
-              />
-            </div>
-          </div>
         </div>
 
         <div className={`scrollHint ${reducedMotion ? "" : "bounce"}`}>
@@ -470,13 +457,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="visual reveal">            <div className="patchStage small reveal">
-              <img
-                className="patchImg small"
-                src={`${BASE}assets/spectrumhero.png`}
-                alt="Spectrum Hero patch"
-              />
-            </div>
+          <div className="visual reveal">
             <div className="cardPanel">
               <h3 className="h3">What it’s for</h3>
               <ul className="list">
@@ -505,16 +486,6 @@ export default function Home() {
       <section id="patch" className="section">
         <div className="container split">
           <div className="visual reveal">
-            <div className="patchStage big">
-              <div className="patchGlow" aria-hidden="true" />
-              <img
-                className="patchImg big"
-                src={`${BASE}assets/spectrumhero.png`}
-                alt="Spectrum Hero patch"
-                width="1024"
-                height="1024"
-              />
-            </div>
           </div>
 
           <div className="copy">
@@ -578,8 +549,7 @@ export default function Home() {
               const price = formatPrice(variant?.price);
               const img =
                 product.images?.find((i) => i.is_default)?.src ||
-                product.images?.[0]?.src ||
-                `${BASE}assets/spectrumhero.png`;
+                product.images?.[0]?.src;
               const desc = product.title?.split("|")?.[0]?.trim() || product.title || "Patch-forward drop.";
 
               return (
@@ -635,8 +605,7 @@ export default function Home() {
                 <img
                   src={
                     selectedProduct.images?.find((i) => i.is_default)?.src ||
-                    selectedProduct.images?.[0]?.src ||
-                    `${BASE}assets/spectrumhero.png`
+                    selectedProduct.images?.[0]?.src
                   }
                   alt={selectedProduct.title}
                 />
