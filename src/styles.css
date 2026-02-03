@@ -453,6 +453,19 @@ body{
 }
 .patchImg.big{ width: 92%; }
 
+.patchStage.small {
+  max-width: 160px;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 1.5rem;
+}
+
+.patchImg.small {
+  width: 100%;
+  height: auto;
+  opacity: 0.9;
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,.4));
+}
+
 .chips{
   display:flex;
   gap: 10px;

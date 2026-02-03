@@ -470,7 +470,13 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="visual reveal">
+          <div className="visual reveal">            <div className="patchStage small reveal">
+              <img
+                className="patchImg small"
+                src={`${BASE}assets/spectrumhero.png`}
+                alt="Spectrum Hero patch"
+              />
+            </div>
             <div className="cardPanel">
               <h3 className="h3">What it’s for</h3>
               <ul className="list">
