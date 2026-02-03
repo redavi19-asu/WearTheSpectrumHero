@@ -113,11 +113,11 @@ function useScrollProgress(ref) {
 }
 
 function CartButton() {
-  const { items, openCart } = useCart();
+  const { items, setOpen } = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
 
   return (
-    <button className="cart-btn" onClick={openCart}>
+    <button className="cart-btn" onClick={() => setOpen(true)}>
       🛒 Cart {count > 0 && `(${count})`}
     </button>
   );
