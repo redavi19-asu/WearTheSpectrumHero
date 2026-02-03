@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+                        import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Capture from "./Capture";
