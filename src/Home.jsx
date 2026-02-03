@@ -605,10 +605,10 @@ export default function Home() {
           <div className="ringBrainStage">
             <video
               className="rbVideo"
-              src="/WearTheSpectrumHero/brain-scroll-ios.mp4"
+              src="/brain-scroll-ios.mp4"
+              autoPlay
               muted
-              playsInline
-              preload="auto"
+              loop
             />
           </div>
 
