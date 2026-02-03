@@ -603,27 +603,27 @@ export default function Home() {
           </div>
 
           <div className="ringBrainStage reveal">
-            {!videoError ? (
-              <video
-                ref={videoRef}
-                className="rbVideo"
-                muted
-                playsInline
-                webkit-playsinline="true"
-                preload="auto"
-                poster={`${BASE}assets/spectrumhero.png`}
-                onError={() => setVideoError(true)}
-              >
-                <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
-                <track kind="captions" />
-              </video>
-            ) : (
+            <div className="patchStage">
+              {!videoError ? (
+                <video
+                  ref={videoRef}
+                  className="patchVideo"
+                  muted
+                  playsInline
+                  webkit-playsinline="true"
+                  preload="metadata"
+                  onError={() => setVideoError(true)}
+                >
+                  <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
+                  <track kind="captions" />
+                </video>
+              ) : null}
               <img
-                className="rbVideo"
+                className="patchImg"
                 src={`${BASE}assets/spectrumhero.png`}
                 alt="Spectrum Hero patch"
               />
-            )}
+            </div>
           </div>
 
           <div className="pinHint reveal">
