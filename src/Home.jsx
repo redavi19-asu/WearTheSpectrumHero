@@ -463,6 +463,8 @@ export default function Home() {
           </div>
 
           <div className="visual reveal">
+            <Patch size="small" />
+
             <div className="cardPanel">
               <h3 className="h3">What it’s for</h3>
               <ul className="list">
@@ -491,6 +493,7 @@ export default function Home() {
       <section id="patch" className="section">
         <div className="container split">
           <div className="visual reveal">
+            <Patch size="big" />
           </div>
 
           <div className="copy">
