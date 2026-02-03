@@ -264,20 +264,20 @@ export default function Home() {
     if (!video || !section) return;
 
     let rafId = null;
+    let running = true;
 
     const scrub = () => {
+      if (!running) return;
+
       const rect = section.getBoundingClientRect();
       const viewHeight = window.innerHeight;
       const scrollLength = rect.height - viewHeight;
 
-      if (scrollLength <= 0) return;
-
-      const progress = Math.min(
-        Math.max(-rect.top / scrollLength, 0),
-        1
-      );
-
-      if (!isNaN(video.duration)) {
+      if (scrollLength > 0 && video.duration) {
+        const progress = Math.min(
+          Math.max(-rect.top / scrollLength, 0),
+          1
+        );
         video.currentTime = progress * video.duration;
       }
 
@@ -286,7 +286,10 @@ export default function Home() {
 
     rafId = requestAnimationFrame(scrub);
 
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      running = false;
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
