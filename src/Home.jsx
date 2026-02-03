@@ -112,6 +112,17 @@ function useScrollProgress(ref) {
   return p;
 }
 
+function CartButton() {
+  const { items, openCart } = useCart();
+  const count = items.reduce((s, i) => s + i.qty, 0);
+
+  return (
+    <button className="cart-btn" onClick={openCart}>
+      🛒 Cart {count > 0 && `(${count})`}
+    </button>
+  );
+}
+
 export default function Home() {
   const BASE = import.meta.env.BASE_URL;
   const reducedMotion = usePrefersReducedMotion();
@@ -335,6 +346,7 @@ export default function Home() {
 
   return (
     <div className="page">
+      <CartButton />
       {/* HERO */}
       <header className="hero">
         <div className="heroInner">
