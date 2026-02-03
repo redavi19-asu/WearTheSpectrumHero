@@ -264,14 +264,40 @@ export default function Home() {
     const sync = () => {
       if (!v.duration || Number.isNaN(v.duration)) return;
       const t = Math.max(0, Math.min(1, lineProgress));
-      v.currentTime = t * v.duration;
+      const targetTime = t * v.duration;
+      
+      // Only update if significantly different (avoid jank)
+      if (Math.abs(v.currentTime - targetTime) > 0.05) {
+        v.currentTime = targetTime;
+      }
     };
 
+    // Force load on iOS
+    v.load();
     v.autoplay = false;
     v.pause();
+    
+    const loadedHandler = () => {
+      sync();
+      // Ensure video is ready on iOS
+      v.play().then(() => {
+        v.pause();
+        v.currentTime = 0;
+      }).catch(() => {
+        // Autoplay prevented, that's fine
+      });
+    };
+
+    v.addEventListener("loadedmetadata", loadedHandler);
+    v.addEventListener("canplay", sync);
+    
+    // Sync on every progress update
     sync();
-    v.addEventListener("loadedmetadata", sync);
-    return () => v.removeEventListener("loadedmetadata", sync);
+
+    return () => {
+      v.removeEventListener("loadedmetadata", loadedHandler);
+      v.removeEventListener("canplay", sync);
+    };
   }, [lineProgress]);
 
   useEffect(() => {
