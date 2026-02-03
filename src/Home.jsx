@@ -5,6 +5,8 @@ import { startCart } from "./cart.js";
 import { useCart } from "./cartState";
 import CartDrawer from "./CartDrawer.jsx";
 
+const WORKER_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
+
 async function buyNow() {
   // 1. Start cart (token)
   const cartToken = await startCart();
@@ -116,6 +118,9 @@ export default function Home() {
   useRevealOnScroll(".reveal");
   const isNarrow = useIsNarrow();
   const { addItem } = useCart();
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [productsError, setProductsError] = useState("");
 
   useEffect(() => {
     const history = window.history;
@@ -139,6 +144,45 @@ export default function Home() {
     if (existing) return;
     startCart().catch((err) => console.warn("startCart failed", err));
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchProducts() {
+      try {
+        setLoadingProducts(true);
+        setProductsError("");
+        const res = await fetch(`${WORKER_BASE}/printify/products`);
+        if (!res.ok) {
+          throw new Error(`Request failed: ${res.status}`);
+        }
+        const data = await res.json();
+        if (!cancelled) {
+          setProducts(data.products || []);
+        }
+      } catch (err) {
+        console.error("Failed to load products", err);
+        if (!cancelled) setProductsError("Could not load products right now.");
+      } finally {
+        if (!cancelled) setLoadingProducts(false);
+      }
+    }
+
+    fetchProducts();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const formatPrice = (cents = 0) => ((cents || 0) / 100).toFixed(2);
+
+  const handleAddToCart = (product, price) => {
+    addItem({
+      id: product.id,
+      name: product.title,
+      unitPrice: price,
+    });
+  };
 
   const lineSectionRef = useRef(null);
   const videoRef = useRef(null);
@@ -540,96 +584,51 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid reveal">
-            <article className="product">
-              <div className="productTop">
-                <div className="productBadge red" />
-                <div>
-                  <div className="productName">Patch Tee</div>
-                  <div className="productSub">Everyday soft</div>
-                </div>
-              </div>
-              <div className="productBody">
-                <p className="p subtle">
-                  The patch design, centered and calm. Built for daily wear.
-                </p>
-              </div>
-              <div className="productActions">
-                <button className="btn">Details</button>
-                <button
-                  className="btn primary"
-                  onClick={() =>
-                    addItem({
-                      id: "patch-tee",
-                      name: "Patch Tee",
-                      unitPrice: "25.00",
-                    })
-                  }
-                >
-                  Add to cart
-                </button>
-              </div>
-            </article>
+          <div id="products" className="product-grid reveal">
+            {loadingProducts && (
+              <p className="p subtle">Loading products...</p>
+            )}
 
-            <article className="product">
-              <div className="productTop">
-                <div className="productBadge blue" />
-                <div>
-                  <div className="productName">Hoodie</div>
-                  <div className="productSub">Black-on-black vibe</div>
-                </div>
-              </div>
-              <div className="productBody">
-                <p className="p subtle">
-                  Minimal outside, meaningful inside. Patch stays visible.
-                </p>
-              </div>
-              <div className="productActions">
-                <button className="btn">Details</button>
-                <button
-                  className="btn primary"
-                  onClick={() =>
-                    addItem({
-                      id: "hoodie",
-                      name: "Hoodie",
-                      unitPrice: "25.00",
-                    })
-                  }
-                >
-                  Add to cart
-                </button>
-              </div>
-            </article>
+            {productsError && (
+              <p className="p subtle errorText">{productsError}</p>
+            )}
 
-            <article className="product">
-              <div className="productTop">
-                <div className="productBadge yellow" />
-                <div>
-                  <div className="productName">Cap / Beanie</div>
-                  <div className="productSub">Small signal</div>
-                </div>
-              </div>
-              <div className="productBody">
-                <p className="p subtle">
-                  For days you want the message without the conversation.
-                </p>
-              </div>
-              <div className="productActions">
-                <button className="btn">Details</button>
-                <button
-                  className="btn primary"
-                  onClick={() =>
-                    addItem({
-                      id: "cap-beanie",
-                      name: "Cap / Beanie",
-                      unitPrice: "25.00",
-                    })
-                  }
-                >
-                  Add to cart
-                </button>
-              </div>
-            </article>
+            {!loadingProducts && !productsError && products.length === 0 && (
+              <p className="p subtle">No products available yet.</p>
+            )}
+
+            {!loadingProducts && !productsError && products.map((product) => {
+              const img = product.images?.[0]?.src || `${BASE}assets/spectrumhero.png`;
+              const price = formatPrice(product.variants?.[0]?.price);
+              const desc = product.description || "Patch-forward drop.";
+
+              return (
+                <article key={product.id} className="product">
+                  <div className="productMedia">
+                    <img src={img} alt={product.title} loading="lazy" />
+                  </div>
+
+                  <div className="productNameRow">
+                    <div>
+                      <div className="productName">{product.title}</div>
+                      <div className="productSub">Made for Spectrum Heroes</div>
+                    </div>
+                    <div className="productPrice">${price}</div>
+                  </div>
+
+                  <p className="p subtle productDesc">{desc}</p>
+
+                  <div className="productActions">
+                    <button
+                      className="btn primary"
+                      onClick={() => handleAddToCart(product, price)}
+                    >
+                      Add to cart
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
