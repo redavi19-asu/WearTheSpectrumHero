@@ -5,6 +5,7 @@ import { startCart } from "./cart.js";
 import { useCart } from "./cartState";
 import CartDrawer from "./CartDrawer.jsx";
 import BrainScroll from "./BrainScroll.jsx";
+import Patch from "./Patch.jsx";
 
 const WORKER_BASE = "https://spectrum-hero-printify.ryanedavis.workers.dev";
 
@@ -373,6 +374,10 @@ export default function Home() {
             <p className="p subtle reveal">
               It’s not a label. It’s a quiet signal that helps the room meet you halfway.
             </p>
+          </div>
+
+          <div className="visual">
+            <Patch />
           </div>
 
         </div>
