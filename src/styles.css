@@ -801,16 +801,12 @@ body{
   text-align: center;
 }
 
-.ringBrainStage{
+.ringBrainStage {
   width: min(520px, 92vw);
-  aspect-ratio: 1 / 1;     /* “more square image” */
-  border-radius: 26px;
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.02);
-  box-shadow: 0 18px 60px rgba(0,0,0,.6);
+  aspect-ratio: 1 / 1;
+  overflow: visible;
   display: grid;
   place-items: center;
-  overflow: hidden;
 }
 
 .rbSvg{
@@ -822,10 +818,7 @@ body{
 .rbVideo {
   width: 100%;
   height: 100%;
-  object-fit: contain;        /* NOT cover */
-  max-height: 100%;
-  border-radius: 18px;
-  display: block;
+  object-fit: contain;
 }
 
 /* Shared stroke style */
