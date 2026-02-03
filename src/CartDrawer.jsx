@@ -57,12 +57,26 @@ export default function CartDrawer() {
 
   return (
     <>
-      {open && <div className="cart-overlay" onClick={() => setOpen(false)} />}
+      {open && (
+        <div 
+          className="cart-overlay" 
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-      <aside className={`cart-drawer ${open ? "open" : ""}`}>
+      <aside 
+        className={`cart-drawer ${open ? "open" : ""}`}
+        aria-label="Shopping cart"
+        aria-hidden={!open}
+      >
         <header className="cartHeader">
           <h3>Your Cart</h3>
-          <button className="cart-close" onClick={() => setOpen(false)}>
+          <button 
+            className="cart-close" 
+            onClick={() => setOpen(false)}
+            aria-label="Close cart"
+          >
             ×
           </button>
         </header>
@@ -87,12 +101,27 @@ export default function CartDrawer() {
               </div>
 
               <div className="qty">
-                <button onClick={() => decrementQty(item.variantId)}>−</button>
-                <span>{item.qty}</span>
-                <button onClick={() => incrementQty(item.variantId)}>+</button>
+                <button 
+                  onClick={() => decrementQty(item.variantId)}
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+                <span aria-label={`Quantity: ${item.qty}`}>{item.qty}</span>
+                <button 
+                  onClick={() => incrementQty(item.variantId)}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
               </div>
 
-              <button onClick={() => removeItem(item.variantId)}>×</button>
+              <button 
+                onClick={() => removeItem(item.variantId)}
+                aria-label={`Remove ${item.title} from cart`}
+              >
+                ×
+              </button>
             </div>
           ))}
         </div>

@@ -117,7 +117,11 @@ function CartButton() {
   const count = items.reduce((s, i) => s + i.qty, 0);
 
   return (
-    <button className="cart-btn" onClick={() => setOpen(true)}>
+    <button 
+      className="cart-btn" 
+      onClick={() => setOpen(true)}
+      aria-label={`Open shopping cart${count > 0 ? ` with ${count} items` : ''}`}
+    >
       🛒 Cart {count > 0 && `(${count})`}
     </button>
   );
@@ -384,6 +388,7 @@ export default function Home() {
                 onError={() => setHeroVideoError(true)}
               >
                 <source src={`${BASE}assets/hero.mp4`} type="video/mp4" />
+                <track kind="captions" />
               </video>
             </div>
           )}
@@ -395,6 +400,7 @@ export default function Home() {
         </div>
       </header>
 
+      <main>
       {/* STORY A */}
       <section id="story" className="section">
         <div className="container split">
@@ -424,6 +430,8 @@ export default function Home() {
                 className="patchImg"
                 src={`${BASE}assets/spectrumhero.png`}
                 alt="Spectrum Hero patch"
+                width="1024"
+                height="1024"
               />
             </div>
           </div>
@@ -581,6 +589,7 @@ export default function Home() {
                 onError={() => setVideoError(true)}
               >
                 <source src={`${BASE}assets/brain-scroll-ios.mp4`} type="video/mp4" />
+                <track kind="captions" />
               </video>
             ) : (
               <img
@@ -608,6 +617,8 @@ export default function Home() {
                 className="patchImg big"
                 src={`${BASE}assets/spectrumhero.png`}
                 alt="Spectrum Hero patch"
+                width="1024"
+                height="1024"
               />
             </div>
           </div>
@@ -774,6 +785,8 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      </main>
 
       <CartDrawer />
 
