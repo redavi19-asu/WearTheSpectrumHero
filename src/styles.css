@@ -1453,3 +1453,48 @@ body{
     padding-right: 1.25rem;
   }
 }
+
+/* ===== iPad PORTRAIT — WebKit HARD OVERRIDE ===== */
+@media (min-width: 768px) and (max-width: 900px) and (orientation: portrait) {
+
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Kill 100vw overflow bugs */
+  * {
+    max-width: 100vw;
+  }
+
+  /* Fix pinned / transformed sections */
+  .pinSection,
+  .pinSticky,
+  .hero,
+  .heroInner {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+    right: 0;
+    transform: none !important;
+  }
+
+  /* Center layout safely */
+  .container,
+  .split {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  /* Text blocks must never offset */
+  .copy,
+  .visual,
+  .brainCopy,
+  .pinCopy {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
