@@ -26,6 +26,21 @@ export default function BrainScroll() {
 
   useEffect(() => {
     const v = videoRef.current;
+    if (!v) return;
+    v.load();
+    // iPhone Safari force-render fix
+    setTimeout(() => {
+      if (v.paused) {
+        v.play().then(() => {
+          v.pause();
+          v.currentTime = 0;
+        }).catch(() => {});
+      }
+    }, 200);
+  }, []);
+
+  useEffect(() => {
+    const v = videoRef.current;
     if (!v || !v.duration) return;
     v.currentTime = progress * v.duration;
   }, [progress]);
@@ -34,10 +49,17 @@ export default function BrainScroll() {
     <section ref={sectionRef} className="brainScrollSection">
       <video
         ref={videoRef}
-        className="brainScrollVideo"
+        className="rbVideo"
         muted
         playsInline
         preload="auto"
+        poster="/WearTheSpectrumHero/assets/spectrumhero.png"
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          WebkitTransform: "translateZ(0)",
+        }}
       >
         <source src={`${import.meta.env.BASE_URL}assets/brain-scroll-ios.mp4`} type="video/mp4" />
       </video>
