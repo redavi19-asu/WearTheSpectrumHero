@@ -1326,19 +1326,21 @@ body{
 }
 
 .brainCopy {
-  max-width: 560px;        /* keeps it readable */
-  padding-left: 2.5rem;   /* pulls it away from edge */
+  max-width: 560px;
+  margin-left: auto;     /* THIS is the key */
+  margin-right: 0;
+  padding-left: 1.5rem;
 }
 
-.brainCopy h2 {
-  font-size: 2.25rem;     /* headline */
-  line-height: 1.2;
-  margin-bottom: 1rem;
+.brainTitle {
+  font-size: 2.4rem;
+  margin-bottom: 1.25rem;
 }
 
 .brainCopy p {
-  font-size: 1.125rem;   /* body text */
-  line-height: 1.65;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
 }
 
 .brainVideoWrap {
@@ -1353,8 +1355,13 @@ body{
   }
 
   .brainCopy {
+    margin-left: 0;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+  }
+
+  .brainTitle {
+    font-size: 1.9rem;
   }
 
   .brainCopy h2 {

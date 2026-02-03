@@ -52,7 +52,7 @@ export default function BrainScroll() {
           
           {/* STORY TEXT */}
           <div className="brainCopy">
-            <h2>This is what autism can feel like</h2>
+            <h2 className="brainTitle reveal">"Autism"</h2>
 
             <p>
               Not broken. Not less. Just different wiring — processing more,
