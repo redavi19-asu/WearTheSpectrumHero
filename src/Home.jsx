@@ -253,14 +253,13 @@ export default function Home() {
 
   const lineSectionRef = useRef(null);
   const videoRef = useRef(null);
-  const sectionRef = useRef(null);
   const lineProgress = useScrollProgress(lineSectionRef);
   const [isPinned, setIsPinned] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    const section = sectionRef.current;
+    const section = lineSectionRef.current;
     if (!video || !section) return;
 
     let rafId = null;
@@ -601,7 +600,7 @@ export default function Home() {
       </section>
 
       {/* STORY C — PINNED RING → BRAIN (8 colors only) */}
-      <section ref={sectionRef} className="pinSection" id="story-c">
+      <section ref={lineSectionRef} className="pinSection" id="story-c">
         <div
           className={`pinSticky ${isPinned ? "isPinned" : ""}`}
           style={{
