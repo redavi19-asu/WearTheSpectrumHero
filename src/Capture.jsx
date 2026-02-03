@@ -1,45 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { API_BASE } from "./api";
-import { useCart } from "./cartState";
 
 export default function Capture() {
-  const [orderId, setOrderId] = useState(null);
-  const { clearCart } = useCart();
-
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get("token"); // PayPal sends ?token=
+    const params = new URLSearchParams(window.location.hash.split("?")[1]);
+    const orderId = params.get("token");
 
     if (!orderId) return;
 
+    const token = localStorage.getItem("cartToken");
+
     fetch(`${API_BASE}/paypal/capture`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ orderId }),
     })
-      .then((res) => res.json())
       .then(() => {
-        clearCart();
-        setOrderId(orderId);
+        window.location.hash = "#/success";
+      })
+      .catch(() => {
+        window.location.hash = "#/error";
       });
-  }, [clearCart]);
+  }, []);
 
   return (
-    <div className="page successPage">
-      <h1>Thank you for your order 🎉</h1>
-
-      {orderId && (
-        <p className="p subtle">
-          Order ID: <strong>{orderId}</strong>
-        </p>
-      )}
-
-      <button
-        className="btn primary"
-        onClick={() => (window.location.href = "/#/merch")}
-      >
-        Continue shopping
-      </button>
+    <div className="page center">
+      <h1>Finalizing your order…</h1>
     </div>
   );
 }

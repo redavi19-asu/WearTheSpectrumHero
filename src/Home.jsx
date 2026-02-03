@@ -142,7 +142,20 @@ export default function Home() {
     };
   }, []);
 
+  // Handle scroll parameter after products load
   useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.split("?")[1]);
+    const scrollTo = params.get("scroll");
+
+    if (scrollTo && !loadingProducts) {
+      const el = document.getElementById(scrollTo);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    }
+  }, [loadingProducts]);  useEffect(() => {
     const existing = localStorage.getItem("cartToken");
     if (existing) return;
     startCart().catch((err) => console.warn("startCart failed", err));
