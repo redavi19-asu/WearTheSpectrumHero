@@ -861,6 +861,7 @@ body{
   will-change: transform;
 
   backface-visibility: hidden;
+  contain: paint layout size;
 }
 
 .rbPatch {
@@ -883,6 +884,13 @@ body{
   height: auto;
   object-fit: contain;
   display: block;
+}
+
+/* 🚫 HARD DISABLE PATCH FOR VIDEO SCRUB SECTION */
+.rbPatch,
+.patchImg,
+.patchStage {
+  display: none !important;
 }
 
 .rbSvg{

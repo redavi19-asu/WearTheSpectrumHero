@@ -604,20 +604,13 @@ export default function Home() {
 
           <div className="ringBrainStage reveal">
             <div className="rbStage">
-              {!videoError ? (
-                <video
-                  ref={videoRef}
-                  className="rbVideo"
-                  src={`${BASE}assets/brain-scroll-ios.mp4`}
-                  muted
-                  playsInline
-                  preload="auto"
-                  onError={() => setVideoError(true)}
-                />
-              ) : null}
-              <div className="rbPatch">
-                <img src={`${BASE}assets/spectrumhero.png`} alt="Spectrum Hero Patch" />
-              </div>
+              <video
+                className="rbVideo"
+                src="/brain-scroll-ios.mp4"
+                muted
+                playsInline
+                preload="auto"
+              />
             </div>
           </div>
 
