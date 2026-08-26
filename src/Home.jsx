@@ -392,10 +392,10 @@ export default function Home() {
       <section className="section">
         <div className="container split reverse">
           <div className="copy">
-            <h2 className="h2 reveal">A starter 8 colors — but one shared meaning</h2>
+            <h2 className="h2 reveal">Different colors — one shared meaning</h2>
             <p className="p reveal">
-              Like a Crayola starter pack: simple, familiar, and human. The colors aren’t “extra.”
-              They’re a reminder that people experience the world differently — and that’s okay.
+              The colors in the Spectrum Hero patch work together as one message: see the person,
+              understand the person, support the person, and lead with respect.
             </p>
 
             <div className="miniGrid reveal">
@@ -403,62 +403,41 @@ export default function Home() {
                 <div className="miniDot red" />
                 <div>
                   <div className="miniTitle">Red</div>
-                  <div className="miniText">presence</div>
-                </div>
-              </div>
-              <div className="miniCard">
-                <div className="miniDot orange" />
-                <div>
-                  <div className="miniTitle">Orange</div>
-                  <div className="miniText">warmth</div>
+                  <div className="miniText">visibility & presence</div>
                 </div>
               </div>
               <div className="miniCard">
                 <div className="miniDot yellow" />
                 <div>
                   <div className="miniTitle">Yellow</div>
-                  <div className="miniText">clarity</div>
+                  <div className="miniText">understanding & clarity</div>
                 </div>
               </div>
               <div className="miniCard">
                 <div className="miniDot green" />
                 <div>
                   <div className="miniTitle">Green</div>
-                  <div className="miniText">calm</div>
+                  <div className="miniText">support & calm</div>
                 </div>
               </div>
               <div className="miniCard">
                 <div className="miniDot blue" />
                 <div>
                   <div className="miniTitle">Blue</div>
-                  <div className="miniText">trust</div>
-                </div>
-              </div>
-              <div className="miniCard">
-                <div className="miniDot indigo" />
-                <div>
-                  <div className="miniTitle">Indigo</div>
-                  <div className="miniText">depth</div>
-                </div>
-              </div>
-              <div className="miniCard">
-                <div className="miniDot violet" />
-                <div>
-                  <div className="miniTitle">Violet</div>
-                  <div className="miniText">care</div>
+                  <div className="miniText">trust & respect</div>
                 </div>
               </div>
               <div className="miniCard">
                 <div className="miniDot black" />
                 <div>
                   <div className="miniTitle">Black</div>
-                  <div className="miniText">respect</div>
+                  <div className="miniText">strength & unity</div>
                 </div>
               </div>
             </div>
 
             <p className="p subtle reveal">
-              The design stays friendly. The message stays serious.
+              Different colors, one purpose: visibility, understanding, support, and respect.
             </p>
           </div>
 
