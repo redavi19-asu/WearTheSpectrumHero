@@ -1,0 +1,371 @@
+:root {
+  --journey-ink: #f7f7fb;
+  --journey-muted: rgba(245, 245, 252, 0.72);
+}
+
+.page {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(81, 62, 120, 0.14), transparent 34%),
+    radial-gradient(circle at 86% 28%, rgba(26, 99, 122, 0.12), transparent 30%),
+    linear-gradient(180deg, #07080c 0%, #090a0f 42%, #06070a 100%);
+}
+
+.lifeJourney {
+  position: relative;
+  height: 440vh;
+  background: #05060a;
+}
+
+.lifeJourneySticky {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  padding: clamp(78px, 9vw, 118px) clamp(20px, 6vw, 96px) 64px;
+  color: var(--journey-ink);
+  isolation: isolate;
+}
+
+.journeyBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    radial-gradient(circle at 22% 30%, rgba(126, 87, 194, 0.19), transparent 30%),
+    radial-gradient(circle at 76% 52%, rgba(39, 157, 180, 0.17), transparent 35%),
+    linear-gradient(135deg, #06070b 0%, #0d0d16 48%, #070a0f 100%);
+}
+
+.journeyBackdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,.68), rgba(0,0,0,.18) 56%, rgba(0,0,0,.38));
+}
+
+.journeyGrain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .16;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.32) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.18) 0 1px, transparent 1.5px);
+  background-size: 22px 22px, 31px 31px;
+  mix-blend-mode: soft-light;
+}
+
+.journeyTopline {
+  position: absolute;
+  top: 32px;
+  left: clamp(20px, 6vw, 96px);
+  right: clamp(20px, 6vw, 96px);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  color: rgba(255,255,255,.5);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+
+.journeyLayout {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr);
+  align-items: center;
+  gap: clamp(42px, 7vw, 110px);
+}
+
+.journeyCopy,
+.journeyVisual {
+  animation: journeyReveal .7s cubic-bezier(.2,.7,.2,1) both;
+}
+
+.journeyKicker {
+  margin: 0 0 18px;
+  font-size: .76rem;
+  font-weight: 900;
+  letter-spacing: .24em;
+  color: #9fe7ef;
+}
+
+.journeyCopy h2 {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(2.25rem, 5vw, 5.2rem);
+  line-height: .98;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+.journeyBody {
+  max-width: 650px;
+  margin: 28px 0 0;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.75;
+  color: var(--journey-muted);
+}
+
+.journeyNote {
+  margin: 26px 0 0;
+  padding-left: 16px;
+  border-left: 2px solid rgba(159, 231, 239, .72);
+  color: rgba(255,255,255,.9);
+  font-weight: 700;
+}
+
+.journeyVisual {
+  min-width: 0;
+}
+
+.journeyScene {
+  position: relative;
+  height: min(66vh, 620px);
+  min-height: 430px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 34px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018)),
+    linear-gradient(145deg, #171926, #0c1119 72%);
+  box-shadow: 0 30px 90px rgba(0,0,0,.5), inset 0 1px rgba(255,255,255,.08);
+}
+
+.sceneGlow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: .55;
+}
+
+.sceneGlowA {
+  width: 260px;
+  height: 260px;
+  top: -70px;
+  right: -30px;
+  background: rgba(123, 83, 199, .55);
+}
+
+.sceneGlowB {
+  width: 240px;
+  height: 240px;
+  left: -70px;
+  bottom: -90px;
+  background: rgba(53, 179, 187, .35);
+}
+
+.sceneFloor {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 11%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+}
+
+.cartoonPerson {
+  position: absolute;
+  width: 92px;
+  height: 190px;
+  transform-origin: bottom center;
+}
+
+.cartoonPerson .head {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  top: 0;
+  left: 19px;
+  border-radius: 50%;
+  background: #f0b894;
+  box-shadow: inset -8px -5px rgba(104, 47, 62, .12);
+}
+
+.cartoonPerson .body {
+  position: absolute;
+  width: 64px;
+  height: 86px;
+  top: 56px;
+  left: 14px;
+  border-radius: 22px 22px 14px 14px;
+  background: linear-gradient(160deg, #7864cb, #3e6fbc);
+}
+
+.cartoonPerson .arm,
+.cartoonPerson .leg {
+  position: absolute;
+  display: block;
+  width: 18px;
+  border-radius: 20px;
+  background: #e7aa88;
+  transform-origin: top center;
+}
+
+.cartoonPerson .arm { height: 74px; top: 66px; }
+.cartoonPerson .armL { left: 6px; transform: rotate(18deg); }
+.cartoonPerson .armR { right: 6px; transform: rotate(-20deg); }
+.cartoonPerson .leg { height: 72px; top: 130px; background: #343e67; }
+.cartoonPerson .legL { left: 25px; transform: rotate(5deg); }
+.cartoonPerson .legR { right: 25px; transform: rotate(-6deg); }
+
+.child { transform: scale(.82); }
+.childA { left: 18%; bottom: 12%; transform: scale(.78) rotate(-4deg); }
+.childB { right: 18%; bottom: 13%; transform: scale(.84) rotate(5deg); }
+.childB .body { background: linear-gradient(160deg, #48a7a2, #2e7d86); }
+.childB .head { background: #9c6848; }
+
+.sceneBall {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  left: 50%;
+  bottom: 20%;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: conic-gradient(#ffcb57 0 25%, #e65d76 0 50%, #55b9d0 0 75%, #7ed494 0);
+  box-shadow: 0 12px 25px rgba(0,0,0,.28);
+}
+
+.sceneBlocks {
+  position: absolute;
+  left: 11%;
+  bottom: 13%;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+}
+.sceneBlocks i { display:block; width: 30px; height: 30px; border-radius: 6px; background:#f4c453; }
+.sceneBlocks i:nth-child(2){height:46px;background:#d96374}
+.sceneBlocks i:nth-child(3){height:36px;background:#5cb3bb}
+
+.sceneDesk {
+  position: absolute;
+  width: 150px;
+  height: 72px;
+  bottom: 18%;
+  border-radius: 12px;
+  background: linear-gradient(#a67450 0 20%, #5f463d 20% 100%);
+  box-shadow: inset 0 3px rgba(255,255,255,.08);
+}
+.deskA { left: 12%; }
+.deskB { right: 12%; }
+.schoolKidA { left: 18%; bottom: 24%; transform: scale(.68); }
+.schoolKidB { right: 18%; bottom: 24%; transform: scale(.68); }
+.schoolKidB .body { background: linear-gradient(160deg,#e28664,#b65772); }
+.sceneBoard {
+  position: absolute;
+  top: 14%; left: 50%; transform: translateX(-50%);
+  width: 48%; height: 120px;
+  border: 8px solid #714f39;
+  border-radius: 8px;
+  display:grid;place-items:center;
+  background:#243f38;
+  color:rgba(255,255,255,.75);
+  font: 800 2rem/1 system-ui;
+  letter-spacing:.18em;
+}
+
+.teen { transform: scale(.95); }
+.teenA { left: 18%; bottom: 12%; }
+.teenB { right: 18%; bottom: 12%; }
+.teenB .body { background: linear-gradient(160deg,#d05f87,#7b5bc0); }
+.teenB .head { background:#704a37; }
+.speechBubble {
+  position:absolute;
+  padding:11px 16px;
+  border-radius:18px 18px 18px 4px;
+  background:rgba(255,255,255,.92);
+  color:#222738;
+  font-size:.78rem;
+  font-weight:800;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+}
+.bubbleA{left:14%;top:21%}.bubbleB{right:13%;top:30%}
+.spectrumArc{
+  position:absolute;
+  width:260px;height:130px;
+  left:50%;bottom:20%;transform:translateX(-50%);
+  border:10px solid transparent;
+  border-top-color:#57c6d4;
+  border-left-color:#7d6fd0;
+  border-radius:50%;
+  opacity:.32;
+}
+
+.sceneCouch {
+  position:absolute;
+  width:58%;height:135px;
+  left:50%;bottom:14%;transform:translateX(-50%);
+  border-radius:34px 34px 18px 18px;
+  background:linear-gradient(160deg,#314c63,#243746);
+  box-shadow:inset 0 8px rgba(255,255,255,.04),0 20px 40px rgba(0,0,0,.35);
+}
+.adult { transform: scale(.82); }
+.adultA { left:28%;bottom:18%;transform:scale(.8) rotate(-2deg); }
+.adultB { right:26%;bottom:18%;transform:scale(.8) rotate(2deg); }
+.adultA .body { background:linear-gradient(160deg,#5879ba,#3f587d); }
+.adultB .body { background:linear-gradient(160deg,#8c5fa8,#614a82); }
+.adultB .head{background:#86593e}
+.adultBubble{top:14%;left:50%;transform:translateX(-50%);border-radius:18px}
+.scenePlant{position:absolute;right:7%;bottom:13%;width:80px;height:120px}
+.scenePlant span{position:absolute;bottom:0;left:27px;width:32px;height:47px;border-radius:5px 5px 14px 14px;background:#8f5d3e}
+.scenePlant i{position:absolute;width:44px;height:65px;bottom:37px;border-radius:80% 10% 80% 10%;background:#4a8e66}
+.scenePlant i:first-child{left:7px;transform:rotate(-30deg)}
+.scenePlant i:nth-child(2){right:2px;transform:scaleX(-1) rotate(-30deg)}
+
+.journeyProgress {
+  position:absolute;
+  left:clamp(20px,6vw,96px);
+  right:clamp(20px,6vw,96px);
+  bottom:34px;
+  height:2px;
+  overflow:hidden;
+  background:rgba(255,255,255,.12);
+}
+.journeyProgress span{
+  display:block;width:100%;height:100%;
+  transform-origin:left center;
+  background:linear-gradient(90deg,#7a6bd2,#60c0cf,#f0ca67);
+  transition:transform .08s linear;
+}
+.journeyDots{
+  position:absolute;right:clamp(20px,6vw,96px);bottom:51px;
+  display:flex;gap:8px;
+}
+.journeyDots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:.25s ease}
+.journeyDots span.active{width:24px;border-radius:999px;background:#a9edf4}
+
+@keyframes journeyReveal {
+  from { opacity:0; transform:translateY(18px); filter:blur(4px); }
+  to { opacity:1; transform:none; filter:none; }
+}
+
+@media (max-width: 860px) {
+  .lifeJourney { height: 480vh; }
+  .lifeJourneySticky { padding: 74px 18px 58px; align-items: start; overflow-y: hidden; }
+  .journeyTopline { top:22px; left:18px; right:18px; font-size:.58rem; letter-spacing:.14em; }
+  .journeyLayout { grid-template-columns: 1fr; gap: 24px; }
+  .journeyCopy h2 { font-size: clamp(2rem, 9vw, 3.15rem); }
+  .journeyBody { margin-top:16px; line-height:1.55; font-size:.96rem; }
+  .journeyNote { margin-top:16px; font-size:.9rem; }
+  .journeyScene { min-height:280px; height:35vh; border-radius:24px; }
+  .journeyVisual { order:-1; }
+  .journeyProgress { left:18px; right:18px; bottom:24px; }
+  .journeyDots { right:18px; bottom:39px; }
+  .cartoonPerson { transform-origin:bottom center; }
+  .sceneBoard { height:78px; border-width:5px; font-size:1.25rem; }
+  .sceneDesk { width:108px; height:52px; }
+  .sceneCouch { height:90px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journeyCopy,
+  .journeyVisual { animation:none; }
+  .journeyProgress span,
+  .journeyDots span { transition:none; }
+}
