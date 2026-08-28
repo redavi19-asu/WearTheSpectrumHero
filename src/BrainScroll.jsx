@@ -4,72 +4,65 @@ import "./CinematicJourney.css";
 const stages = [
   {
     kicker: "EARLY CHILDHOOD",
-    title: "The world is big, bright, and full of wonder.",
-    copy: "Color, sound, texture, movement, and tiny details can all feel enormous. There is no single right way to explore a new world.",
-    note: "Different ways of experiencing the world are still real ways of connecting with it.",
-    focusY: 8,
+    title: "The world starts big, bright, and full of motion.",
+    copy: "Every sound, color, texture, face, and routine can feel larger than life. Wonder and overwhelm can exist in the same moment.",
+    note: "Different ways of experiencing the world are still valid ways of experiencing it.",
+    imageY: "0%",
+    imageScale: 1.07,
+    accent: "#f2b756",
+    glow: "rgba(242,183,86,.22)",
   },
   {
     kicker: "CHILDHOOD",
-    title: "Curiosity grows. So do the details.",
-    copy: "Play, routines, favorite subjects, patterns, and focused interests can become powerful ways to learn, communicate, and feel grounded.",
-    note: "Interest can become confidence when it is supported instead of redirected.",
-    focusY: 25,
+    title: "Curiosity grows. Interests deepen.",
+    copy: "Play, patterns, favorite subjects, movement, routines, and imagination can become powerful ways to connect with the world.",
+    note: "A strong interest can be a doorway, not a limitation.",
+    imageY: "20%",
+    imageScale: 1.08,
+    accent: "#65aef1",
+    glow: "rgba(101,174,241,.2)",
   },
   {
     kicker: "SCHOOL YEARS",
     title: "New rooms bring new rules, rhythms, and expectations.",
-    copy: "Classrooms, friendships, noise, schedules, and social cues can arrive all at once. Understanding from the people around us can change the entire experience.",
-    note: "Support can turn pressure into possibility.",
-    focusY: 42,
+    copy: "Classrooms, friendships, noise, transitions, and social expectations can arrive all at once. The right support can make space for strengths to show.",
+    note: "Understanding can turn pressure into possibility.",
+    imageY: "40%",
+    imageScale: 1.08,
+    accent: "#80c66a",
+    glow: "rgba(128,198,106,.18)",
   },
   {
     kicker: "TEEN YEARS",
     title: "Identity gets louder while the world asks for more.",
-    copy: "Growing into yourself can mean discovering boundaries, strengths, communication styles, interests, and the people who make it easier to be fully yourself.",
-    note: "Being understood should not require pretending to be someone else.",
-    focusY: 59,
+    copy: "Teen years can mean finding your voice, learning your boundaries, discovering what helps, and deciding which expectations actually belong to you.",
+    note: "Being understood should never require pretending to be someone else.",
+    imageY: "60%",
+    imageScale: 1.09,
+    accent: "#ad75f2",
+    glow: "rgba(173,117,242,.2)",
   },
   {
     kicker: "YOUNG ADULTHOOD",
-    title: "Independence can look different for everyone.",
-    copy: "Work, relationships, routines, creativity, and responsibility all take shape in different ways. There is more than one path toward a meaningful adult life.",
-    note: "Different paths can still lead to purpose, connection, and success.",
-    focusY: 76,
+    title: "Independence brings possibility and new kinds of pressure.",
+    copy: "Work, relationships, responsibilities, routines, and self-advocacy become part of building a life that actually fits the person living it.",
+    note: "Support does not erase independence. It can help make independence possible.",
+    imageY: "80%",
+    imageScale: 1.08,
+    accent: "#f0a15d",
+    glow: "rgba(240,161,93,.18)",
   },
   {
     kicker: "ADULTHOOD",
-    title: "The spectrum does not disappear with age.",
-    copy: "Adults build careers, relationships, communities, families, routines, and lives of their own while continuing to experience the world in uniquely personal ways.",
+    title: "The spectrum does not disappear when childhood ends.",
+    copy: "Autistic adults build careers, relationships, communities, families, routines, creative lives, and futures of their own.",
     note: "Acceptance belongs at every age.",
-    focusY: 93,
+    imageY: "100%",
+    imageScale: 1.06,
+    accent: "#76b7f5",
+    glow: "rgba(118,183,245,.2)",
   },
 ];
-
-function CinematicScene({ stageIndex, stageProgress, progress }) {
-  const stage = stages[stageIndex];
-  const drift = (stageProgress - 0.5) * 3.5;
-  const focusY = Math.max(0, Math.min(100, stage.focusY + drift));
-  const scale = 1.03 + stageProgress * 0.045;
-
-  return (
-    <div className="cinematicScene" aria-hidden="true">
-      <img
-        className="cinematicSceneImage"
-        src={`${import.meta.env.BASE_URL}spectrum-life-cinematic.webp`}
-        alt=""
-        style={{
-          objectPosition: `50% ${focusY}%`,
-          transform: `scale(${scale})`,
-        }}
-      />
-      <div className="cinematicSceneWash" />
-      <div className="cinematicSceneLight" style={{ opacity: 0.16 + progress * 0.12 }} />
-      <div className="cinematicSceneVignette" />
-      <div className="cinematicSceneGrain" />
-    </div>
-  );
-}
 
 export default function BrainScroll() {
   const sectionRef = useRef(null);
@@ -80,13 +73,10 @@ export default function BrainScroll() {
     const update = () => {
       const el = sectionRef.current;
       if (!el) return;
-
       const rect = el.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || 1;
-      const travel = Math.max(1, rect.height - viewportHeight);
-      const next = Math.min(Math.max(-rect.top / travel, 0), 1);
-
-      setProgress(next);
+      const viewport = window.innerHeight || 1;
+      const travel = Math.max(1, rect.height - viewport);
+      setProgress(Math.min(Math.max(-rect.top / travel, 0), 1));
       frameRef.current = 0;
     };
 
@@ -107,42 +97,45 @@ export default function BrainScroll() {
 
   const rawStage = progress * stages.length;
   const stageIndex = Math.min(stages.length - 1, Math.floor(rawStage));
-  const stageProgress = stageIndex === stages.length - 1 && progress === 1 ? 1 : rawStage - stageIndex;
   const stage = stages[stageIndex];
 
-  return (
-    <section ref={sectionRef} className="lifeJourney" aria-label="The Spectrum Through Life">
-      <div className="lifeJourneySticky">
-        <CinematicScene stageIndex={stageIndex} stageProgress={stageProgress} progress={progress} />
+  const visualStyle = {
+    "--image-y": stage.imageY,
+    "--image-scale": stage.imageScale,
+    "--stage-accent": stage.accent,
+    "--stage-glow": stage.glow,
+  };
 
-        <div className="journeyTopline">
+  return (
+    <section ref={sectionRef} className="lifeJourney" aria-label="The spectrum through life">
+      <div className="lifeJourneySticky" style={visualStyle}>
+        <div className="lifeJourneyImage" aria-hidden="true" />
+        <div className="lifeJourneyShade" aria-hidden="true" />
+        <div className="lifeJourneyGlow" aria-hidden="true" />
+
+        <div className="lifeJourneyTopline">
           <span>THE SPECTRUM THROUGH LIFE</span>
           <span>{String(stageIndex + 1).padStart(2, "0")} / {String(stages.length).padStart(2, "0")}</span>
         </div>
 
-        <div className="journeyContent" key={stage.kicker}>
-          <p className="journeyKicker">{stage.kicker}</p>
-          <h2>{stage.title}</h2>
-          <p className="journeyBody">{stage.copy}</p>
-          <p className="journeyNote">{stage.note}</p>
+        <div className="lifeJourneyContent">
+          <article className="lifeJourneyCard" key={stageIndex}>
+            <p className="lifeJourneyKicker">{stage.kicker}</p>
+            <h2>{stage.title}</h2>
+            <p className="lifeJourneyBody">{stage.copy}</p>
+            <p className="lifeJourneyNote">{stage.note}</p>
+          </article>
         </div>
 
-        <div className="journeyStageRail" aria-hidden="true">
+        <div className="lifeJourneyRail" aria-hidden="true">
           {stages.map((item, index) => (
-            <span key={item.kicker} className={index === stageIndex ? "active" : ""}>
-              <i />
-              <b>{String(index + 1).padStart(2, "0")}</b>
-            </span>
+            <span key={item.kicker} className={index === stageIndex ? "active" : ""} />
           ))}
         </div>
 
-        <div className="journeyProgress" aria-hidden="true">
+        <div className="lifeJourneyHint" aria-hidden="true">SCROLL TO MOVE THROUGH THE STORY</div>
+        <div className="lifeJourneyProgress" aria-hidden="true">
           <span style={{ transform: `scaleX(${progress})` }} />
-        </div>
-
-        <div className="journeyScrollCue" aria-hidden="true">
-          <span>SCROLL TO EXPLORE</span>
-          <i>↓</i>
         </div>
       </div>
     </section>
