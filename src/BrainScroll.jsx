@@ -106,10 +106,16 @@ export default function BrainScroll() {
     "--stage-glow": stage.glow,
   };
 
+  const imageUrl = `${import.meta.env.BASE_URL}assets/spectrum-life-cinematic.webp`;
+
   return (
     <section ref={sectionRef} className="lifeJourney" aria-label="The spectrum through life">
       <div className="lifeJourneySticky" style={visualStyle}>
-        <div className="lifeJourneyImage" aria-hidden="true" />
+        <div
+          className="lifeJourneyImage"
+          style={{ backgroundImage: `url(${imageUrl})` }}
+          aria-hidden="true"
+        />
         <div className="lifeJourneyShade" aria-hidden="true" />
         <div className="lifeJourneyGlow" aria-hidden="true" />
 
