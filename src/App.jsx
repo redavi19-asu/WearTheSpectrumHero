@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Capture from "./Capture";
 import { Privacy, Terms, ShippingReturns } from "./Legal";
+import PrivacyControls from "./PrivacyControls";
 
 function Success() {
   return (
@@ -31,14 +32,17 @@ function AppRoutes() {
   }, [navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/capture" element={<Capture />} />
-      <Route path="/success" element={<Success />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/shipping-returns" element={<ShippingReturns />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/capture" element={<Capture />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/shipping-returns" element={<ShippingReturns />} />
+      </Routes>
+      <PrivacyControls />
+    </>
   );
 }
 
