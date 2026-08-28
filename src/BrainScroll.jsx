@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./Journey.css";
 
 const stages = [
@@ -32,74 +32,104 @@ const stages = [
   },
 ];
 
-function SceneArt({ scene }) {
+function CinematicScene({ stageIndex, progress, stageProgress }) {
+  const sceneStyle = useMemo(
+    () => ({
+      "--journey-progress": progress,
+      "--stage-progress": stageProgress,
+      "--stage-index": stageIndex,
+    }),
+    [progress, stageIndex, stageProgress],
+  );
+
   return (
-    <div className={`journeyScene journeyScene--${scene}`} aria-hidden="true">
-      <div className="sceneGlow sceneGlowA" />
-      <div className="sceneGlow sceneGlowB" />
-      <div className="sceneFloor" />
+    <div className={`cinematicScene cinematicScene--${stages[stageIndex].scene}`} style={sceneStyle} aria-hidden="true">
+      <div className="cinemaSky" />
+      <div className="cinemaHalo cinemaHalo--one" />
+      <div className="cinemaHalo cinemaHalo--two" />
+      <div className="cinemaParticles">
+        {Array.from({ length: 18 }).map((_, index) => <i key={index} style={{ "--particle": index }} />)}
+      </div>
 
-      {scene === "play" && (
-        <>
-          <div className="cartoonPerson child childA"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /><span className="leg legL" /><span className="leg legR" /></div>
-          <div className="cartoonPerson child childB"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /><span className="leg legL" /><span className="leg legR" /></div>
-          <div className="sceneBall" />
-          <div className="sceneBlocks"><i /><i /><i /></div>
-        </>
-      )}
+      <div className="cinemaWorld">
+        <div className="environment environment--play">
+          <div className="toyBlock toyBlock--a" /><div className="toyBlock toyBlock--b" /><div className="toyBlock toyBlock--c" />
+          <div className="cinemaBall" />
+        </div>
 
-      {scene === "school" && (
-        <>
-          <div className="sceneDesk deskA" /><div className="sceneDesk deskB" />
-          <div className="cartoonPerson child schoolKidA"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /></div>
-          <div className="cartoonPerson child schoolKidB"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /></div>
-          <div className="sceneBoard"><span>ABC</span></div>
-        </>
-      )}
+        <div className="environment environment--school">
+          <div className="hallLine hallLine--one" /><div className="hallLine hallLine--two" />
+          <div className="locker locker--a" /><div className="locker locker--b" /><div className="locker locker--c" />
+          <div className="schoolDoor"><span>CLASS</span></div>
+        </div>
 
-      {scene === "identity" && (
-        <>
-          <div className="cartoonPerson teen teenA"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /><span className="leg legL" /><span className="leg legR" /></div>
-          <div className="cartoonPerson teen teenB"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /><span className="leg legL" /><span className="leg legR" /></div>
-          <div className="speechBubble bubbleA">music</div>
-          <div className="speechBubble bubbleB">ideas</div>
-          <div className="spectrumArc" />
-        </>
-      )}
+        <div className="environment environment--identity">
+          <div className="cityPanel cityPanel--a" /><div className="cityPanel cityPanel--b" /><div className="cityPanel cityPanel--c" />
+          <div className="neonWord neonWord--one">IDEAS</div><div className="neonWord neonWord--two">VOICE</div>
+        </div>
 
-      {scene === "adult" && (
-        <>
-          <div className="sceneCouch" />
-          <div className="cartoonPerson adult adultA"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /></div>
-          <div className="cartoonPerson adult adultB"><span className="head" /><span className="body" /><span className="arm armL" /><span className="arm armR" /></div>
-          <div className="speechBubble adultBubble">understanding</div>
-          <div className="scenePlant"><i /><i /><span /></div>
-        </>
-      )}
+        <div className="environment environment--adult">
+          <div className="windowFrame"><span /><span /><span /><span /></div>
+          <div className="deskShape" /><div className="plantShape"><i /><i /><b /></div>
+        </div>
+
+        <div className="cinematicPerson">
+          <div className="personShadow" />
+          <div className="personHead"><i /></div>
+          <div className="personNeck" />
+          <div className="personTorso" />
+          <div className="personArm personArm--left"><span /></div>
+          <div className="personArm personArm--right"><span /></div>
+          <div className="personLeg personLeg--left"><span /></div>
+          <div className="personLeg personLeg--right"><span /></div>
+        </div>
+
+        <div className="cinemaForeground cinemaForeground--left" />
+        <div className="cinemaForeground cinemaForeground--right" />
+      </div>
+
+      <div className="cinemaLens" />
+      <div className="cinemaVignette" />
+      <div className="cinemaCaption">SCROLL TO MOVE THROUGH THE STORY</div>
     </div>
   );
 }
 
 export default function BrainScroll() {
   const sectionRef = useRef(null);
+  const frameRef = useRef(0);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => {
+    const update = () => {
       const el = sectionRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const travel = Math.max(1, rect.height - vh);
-      setProgress(Math.min(Math.max(-rect.top / travel, 0), 1));
+      const next = Math.min(Math.max(-rect.top / travel, 0), 1);
+      setProgress(next);
+      frameRef.current = 0;
+    };
+
+    const onScroll = () => {
+      if (!frameRef.current) frameRef.current = requestAnimationFrame(update);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
   }, []);
 
-  const stageIndex = Math.min(stages.length - 1, Math.floor(progress * stages.length));
+  const rawStage = progress * stages.length;
+  const stageIndex = Math.min(stages.length - 1, Math.floor(rawStage));
+  const stageProgress = stageIndex === stages.length - 1 && progress === 1 ? 1 : rawStage - stageIndex;
   const stage = stages[stageIndex];
 
   return (
@@ -121,8 +151,8 @@ export default function BrainScroll() {
             <p className="journeyNote">{stage.note}</p>
           </div>
 
-          <div className="journeyVisual" key={`scene-${stageIndex}`}>
-            <SceneArt scene={stage.scene} />
+          <div className="journeyVisual">
+            <CinematicScene stageIndex={stageIndex} progress={progress} stageProgress={stageProgress} />
           </div>
         </div>
 
