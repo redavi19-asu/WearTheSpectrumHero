@@ -354,6 +354,8 @@ export default function Home() {
       </header>
 
       <main>
+      <BrainScroll />
+
       {/* STORY A */}
       <section id="story" className="section">
         <div className="container split">
@@ -464,9 +466,6 @@ export default function Home() {
           <span className="arrow">↓</span>
         </div>
       </section>
-
-      {/* STORY C — BRAIN SCROLL */}
-      <BrainScroll />
 
       {/* PATCH SECTION (KEEP GLOW + CLEAN BLACK) */}
       <section id="patch" className="section">

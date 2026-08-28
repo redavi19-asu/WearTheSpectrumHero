@@ -300,7 +300,7 @@ body{
 
 .btn.primary{
   border-color: transparent;
-  background: linear-gradient(90deg, rgba(255,59,48,.55), rgba(255,149,0,.55), rgba(255,214,10,.55), rgba(52,199,89,.55), rgba(10,132,255,.55), rgba(191,90,242,.55));
+  background: linear-gradient(90deg, rgba(255,59,48,.55), rgba(255,149,0,.55), rgba(255,214,10,.55), rgba(52,199,89,.55), rgba(10,132,255,.55));
   color: #fff;
 }
 
