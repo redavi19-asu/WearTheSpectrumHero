@@ -48,7 +48,16 @@ function CinematicScene({ stageIndex, progress, stageProgress }) {
       <div className="cinemaHalo cinemaHalo--one" />
       <div className="cinemaHalo cinemaHalo--two" />
       <div className="cinemaParticles">
-        {Array.from({ length: 18 }).map((_, index) => <i key={index} style={{ "--particle": index }} />)}
+        {Array.from({ length: 18 }).map((_, index) => (
+          <i
+            key={index}
+            style={{
+              "--particle": index,
+              left: `${(index * 37) % 97}%`,
+              top: `${(index * 53) % 88}%`,
+            }}
+          />
+        ))}
       </div>
 
       <div className="cinemaWorld">
