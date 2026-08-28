@@ -190,65 +190,184 @@
 }
 
 @media (max-width: 860px) {
-  .lifeJourney { height: 760vh; }
+  .lifeJourney {
+    height: 680vh;
+  }
+
+  .lifeJourneySticky {
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+  }
 
   .lifeJourneyImage {
-    inset: -2%;
-    background-size: auto 110%;
-    background-position: 58% var(--image-y, 50%);
+    inset: -1.5%;
+    background-size: auto 108%;
+    background-position: 54% var(--image-y, 50%);
+    filter: saturate(1) contrast(1.04) brightness(.88);
   }
 
   .lifeJourneyShade {
     background:
-      linear-gradient(180deg, rgba(3,4,6,.08) 0%, rgba(3,4,6,.24) 40%, rgba(3,4,6,.86) 70%, #030406 100%),
-      linear-gradient(90deg, rgba(3,4,6,.18), rgba(3,4,6,.05));
+      linear-gradient(180deg, rgba(3,4,6,.08) 0%, rgba(3,4,6,.12) 30%, rgba(3,4,6,.58) 58%, rgba(3,4,6,.94) 82%, #030406 100%),
+      linear-gradient(90deg, rgba(3,4,6,.22), rgba(3,4,6,.04));
+  }
+
+  .lifeJourneyGlow {
+    width: 78vw;
+    height: 78vw;
+    right: -28vw;
+    top: 12vh;
+    opacity: .72;
   }
 
   .lifeJourneyTopline {
-    top: 22px;
+    top: calc(18px + env(safe-area-inset-top));
     left: 18px;
     right: 18px;
-    font-size: .56rem;
-    letter-spacing: .14em;
+    gap: 12px;
+    font-size: .54rem;
+    letter-spacing: .12em;
   }
 
   .lifeJourneyContent {
     align-items: flex-end;
-    padding: 0 48px 88px 18px;
+    padding:
+      0
+      42px
+      calc(64px + env(safe-area-inset-bottom))
+      16px;
   }
 
   .lifeJourneyCard {
     width: 100%;
+    max-width: 520px;
+    padding: 16px 16px 17px;
+    margin-left: -4px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(7,8,12,.28), rgba(7,8,12,.7));
+    box-shadow: 0 18px 50px rgba(0,0,0,.24);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    text-shadow: 0 3px 20px rgba(0,0,0,.78);
+  }
+
+  .lifeJourneyKicker {
+    margin-bottom: 10px;
+    font-size: .66rem;
+    letter-spacing: .18em;
   }
 
   .lifeJourneyCard h2 {
-    font-size: clamp(2.25rem, 10vw, 4rem);
-    max-width: 94%;
+    max-width: 100%;
+    font-size: clamp(2rem, 9.3vw, 3.25rem);
+    line-height: 1;
   }
 
   .lifeJourneyBody {
-    margin-top: 16px;
-    font-size: .96rem;
-    line-height: 1.55;
+    margin-top: 13px;
+    max-width: 100%;
+    font-size: clamp(.88rem, 3.7vw, 1rem);
+    line-height: 1.48;
   }
 
   .lifeJourneyNote {
-    margin-top: 14px;
-    font-size: .88rem;
+    margin-top: 12px;
+    max-width: 100%;
+    padding-left: 11px;
+    font-size: clamp(.78rem, 3.25vw, .9rem);
+    line-height: 1.42;
   }
 
   .lifeJourneyRail {
-    right: 16px;
-    top: 38%;
-    gap: 12px;
+    right: 14px;
+    top: 42%;
+    gap: 11px;
   }
 
-  .lifeJourneyHint { display: none; }
+  .lifeJourneyRail span {
+    width: 7px;
+    height: 7px;
+  }
+
+  .lifeJourneyRail span.active {
+    transform: scale(1.4);
+    box-shadow: 0 0 16px 4px var(--stage-glow, rgba(189,238,240,.25));
+  }
+
+  .lifeJourneyHint {
+    display: none;
+  }
 
   .lifeJourneyProgress {
-    left: 18px;
-    right: 18px;
-    bottom: 26px;
+    left: 16px;
+    right: 16px;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    height: 3px;
+    border-radius: 999px;
+  }
+}
+
+@media (max-width: 520px) {
+  .lifeJourney {
+    height: 640vh;
+  }
+
+  .lifeJourneyImage {
+    background-size: auto 105%;
+    background-position-x: 52%;
+  }
+
+  .lifeJourneyTopline {
+    font-size: .5rem;
+  }
+
+  .lifeJourneyTopline span:first-child {
+    max-width: 72%;
+  }
+
+  .lifeJourneyContent {
+    padding-right: 34px;
+    padding-bottom: calc(58px + env(safe-area-inset-bottom));
+  }
+
+  .lifeJourneyCard {
+    padding: 14px 14px 15px;
+    border-radius: 17px;
+  }
+
+  .lifeJourneyCard h2 {
+    font-size: clamp(1.85rem, 9vw, 2.75rem);
+  }
+
+  .lifeJourneyBody {
+    font-size: clamp(.84rem, 3.55vw, .95rem);
+  }
+
+  .lifeJourneyNote {
+    font-size: clamp(.76rem, 3.15vw, .86rem);
+  }
+}
+
+@media (max-height: 690px) and (max-width: 860px) {
+  .lifeJourneyCard {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .lifeJourneyCard h2 {
+    font-size: clamp(1.7rem, 8vw, 2.4rem);
+  }
+
+  .lifeJourneyBody {
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  .lifeJourneyNote {
+    margin-top: 9px;
+    line-height: 1.36;
   }
 }
 
